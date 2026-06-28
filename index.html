@@ -1,0 +1,2376 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medical General Chemistry OS</title>
+  <style>
+    :root {
+      --ink: #16201d;
+      --muted: #5f6f69;
+      --line: #d8dfda;
+      --panel: #ffffff;
+      --bg: #f4f7f1;
+      --green: #0f6b4f;
+      --teal: #0b7285;
+      --gold: #a66f00;
+      --red: #9b2c2c;
+      --shadow: 0 12px 30px rgba(28, 43, 36, .10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans TC", system-ui, sans-serif;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      border-right: 1px solid var(--line);
+      background: #fbfcf8;
+      padding: 18px;
+    }
+
+    main {
+      min-width: 0;
+      padding: 22px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.15;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .search,
+    .voice {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--ink);
+    }
+
+    .level-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .level-btn {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+    }
+
+    .level-btn:hover,
+    .level-btn.active {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(15, 107, 79, .12);
+    }
+
+    .level-btn strong {
+      font-size: 14px;
+      color: var(--green);
+    }
+
+    .level-btn span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mode-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip,
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 8px 11px;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .icon-btn {
+      min-width: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .icon-btn.primary {
+      background: var(--teal);
+      color: white;
+      border-color: var(--teal);
+    }
+
+    .hero {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.05;
+    }
+
+    .hero .zh {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .chapter {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .85fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .bilingual-line {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 10px;
+      padding: 11px 0;
+      border-top: 1px solid #edf1ed;
+    }
+
+    .bilingual-line:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .speak {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f9fbf8;
+      cursor: pointer;
+    }
+
+    .english {
+      margin: 0 0 5px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .chinese {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: #fbfcfa;
+      min-height: 72px;
+    }
+
+    .mini b {
+      color: var(--green);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .mini span {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: #eef5f0;
+      color: #174d3d;
+      border: 1px solid #d7e6dc;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 13px;
+    }
+
+    .wisdom {
+      border-left: 4px solid var(--gold);
+      padding: 12px 14px;
+      background: #fffaf0;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    .map {
+      display: grid;
+      gap: 7px;
+      font-size: 14px;
+    }
+
+    .map-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .map-item.active {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--line);
+      flex: 0 0 auto;
+    }
+
+    .map-item.active .dot {
+      background: var(--green);
+    }
+
+
+
+
+    .mindmap-board {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .mind-center {
+      border: 2px solid var(--green);
+      background: #eef8f1;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .mind-branches {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mind-branch {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfa;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mind-branch h4 {
+      margin: 0;
+      color: var(--teal);
+      font-size: 15px;
+    }
+
+    .mind-branch ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .micro-label {
+      display: inline-block;
+      color: var(--gold);
+      font-weight: 800;
+      margin-right: 4px;
+    }
+    .study-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .memory-list {
+      margin: 0;
+      padding-left: 19px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .question-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfa;
+      display: grid;
+      gap: 8px;
+    }
+
+    .question-card .answer {
+      border-left: 3px solid var(--teal);
+      padding-left: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+
+    .lecture-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+      gap: 12px;
+    }
+
+    .lecture-block {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .lecture-block h4 {
+      margin: 0;
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .lecture-block p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    .worked-example {
+      border: 1px solid #c9d9e1;
+      background: #f6fbfd;
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .poster-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff, #f8fbf7);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      min-height: 170px;
+    }
+
+    .poster-title {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .formula-box {
+      border: 2px solid var(--teal);
+      background: #eefaff;
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 900;
+      font-size: 18px;
+      line-height: 1.45;
+      text-align: center;
+      color: #084c5a;
+    }
+
+    .arrow-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .flow-node {
+      border: 1px solid #cbd8d0;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .arrow {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .compare-table td,
+    .compare-table th {
+      border: 1px solid var(--line);
+      padding: 8px;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    .compare-table th {
+      background: #eef5f0;
+      color: var(--green);
+    }
+
+    .quiz-mini {
+      border-left: 4px solid var(--teal);
+      background: #f8fcfd;
+      padding: 9px 10px;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .clinical-path {
+      display: grid;
+      gap: 7px;
+    }
+
+    .clinical-path div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fffdf7;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .wide {
+      margin-top: 16px;
+    }
+
+    .os-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .module-card {
+      border: 1px solid var(--line);
+      background: #fbfcfa;
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      gap: 7px;
+      align-content: start;
+    }
+
+    .module-card h4 {
+      margin: 0;
+      color: var(--green);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .module-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table th,
+    .data-table td {
+      border: 1px solid var(--line);
+      padding: 9px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .data-table th {
+      background: #eef5f0;
+      color: #174d3d;
+    }
+
+    .diagram {
+      border: 1px dashed #b9c8bf;
+      background: #fcfdf9;
+      border-radius: 8px;
+      padding: 12px;
+      line-height: 1.8;
+      color: var(--ink);
+      overflow-x: auto;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: relative;
+        height: auto;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      main,
+      aside {
+        padding: 14px;
+      }
+
+      .lecture-grid,
+      .visual-grid,
+      .mind-branches,
+      .study-strip,
+      .os-grid,
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        align-items: stretch;
+      }
+
+      .mode-group,
+      .icon-btn.primary {
+        width: 100%;
+      }
+
+      .chip {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <h1>Medical General Chemistry OS</h1>
+        <p>普通化學醫學作業系統。雙語呈現，英文可朗讀，所有內容預先建立，離線可用。</p>
+      </div>
+      <div class="controls">
+        <input id="search" class="search" type="search" placeholder="搜尋 OS、章節、醫學連結">
+        <select id="voiceSelect" class="voice" title="English voice"></select>
+      </div>
+      <div id="levelList" class="level-list"></div>
+    </aside>
+
+    <main>
+      <div class="toolbar">
+        <div class="mode-group" aria-label="Display mode">
+          <button class="chip active" data-mode="both">中英</button>
+          <button class="chip" data-mode="en">English</button>
+          <button class="chip" data-mode="zh">中文</button>
+        </div>
+        <button id="speakAll" class="icon-btn primary" title="Read English content aloud">▶ 朗讀本章英文</button>
+      </div>
+
+      <section class="hero">
+        <div id="levelNumber" class="eyebrow"></div>
+        <h2 id="titleEn"></h2>
+        <div id="titleZh" class="zh"></div>
+        <div id="chapter" class="chapter"></div>
+      </section>
+
+      <div class="layout">
+        <div>
+          <section class="section">
+            <h3>雙語核心定位</h3>
+            <div id="bilingual"></div>
+          </section>
+
+          <section class="section">
+            <h3>必建模組</h3>
+            <div id="modules" class="grid"></div>
+          </section>
+
+          <section class="section">
+            <h3>醫學連結</h3>
+            <div id="medicalLinks" class="grid"></div>
+          </section>
+        </div>
+
+        <div>
+          <section class="section">
+            <h3>核心智慧</h3>
+            <div id="wisdom" class="wisdom"></div>
+          </section>
+
+          <section class="section">
+            <h3>世界地圖</h3>
+            <div id="worldMap" class="map"></div>
+          </section>
+
+          <section class="section">
+            <h3>APP 模組</h3>
+            <div id="appModules" class="grid"></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="section wide">
+        <h3>講義核心頁</h3>
+        <div id="plainTalk" class="study-strip"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>題庫解析頁</h3>
+        <div id="examQuestions" class="output-grid"></div>
+      </section>
+
+
+      <section class="section wide">
+        <h3>完整講義頁：從零讀通</h3>
+        <div id="lecturePack" class="lecture-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>補足理解：先備、例題、FAQ、易混淆</h3>
+        <div id="understandingPack" class="visual-grid"></div>
+      </section>
+      <section class="section wide">
+        <h3>最小記憶圖解頁</h3>
+        <div id="memorizePack" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>解題與臨床圖解頁</h3>
+        <div id="usePack" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>心智圖：最整合的呈現</h3>
+        <div id="integratedMindMap" class="mindmap-board"></div>
+      </section>
+      <section class="section wide">
+        <h3>OS 四層解析：本體／結構／機制／行動</h3>
+        <div id="osLayers" class="os-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>一頁總表：雙語＋IPA＋字根</h3>
+        <div id="onePageTable"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>固定圖表產出</h3>
+        <div id="diagramPack" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>分級版本</h3>
+        <div id="levelVersions" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>核心模型與核心公式</h3>
+        <div id="modelsFormulas" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>Anki、Quiz、錯題本</h3>
+        <div id="practicePack" class="output-grid"></div>
+      </section>
+
+      <section class="section wide">
+        <h3>臨床疾病連結</h3>
+        <div id="diseaseLinks" class="grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const levels = [
+      {
+        level: 1,
+        osEn: "Matter OS",
+        osZh: "物質作業系統",
+        chapterEn: "Chapter 1: Matter and Measurement",
+        chapterZh: "第 1 章：物質與測量",
+        coreEn: "Matter and measurement are the shared language of medical science.",
+        coreZh: "物質與測量是所有醫學科學的共同語言。",
+        focusEn: "Without units, concentration, mass, volume, density, significant figures, and uncertainty, students cannot understand dosage, laboratory values, osmotic pressure, pH, or physiological data.",
+        focusZh: "沒有單位、濃度、質量、體積、密度、有效數字與誤差概念，就無法理解藥物劑量、檢驗數值、滲透壓、酸鹼值與生理資料。",
+        modules: ["Matter classification", "Physical and chemical properties", "SI units", "Unit conversion", "Significant figures", "Density", "Temperature scales", "Measurement uncertainty"],
+        links: ["Drug dosage", "IV fluid volume", "Blood laboratory values", "Urine specific gravity", "Fever measurement", "Laboratory error"],
+        wisdom: "Medicine begins when matter becomes measurable."
+      },
+      {
+        level: 2,
+        osEn: "Atom OS",
+        osZh: "原子作業系統",
+        chapterEn: "Chapter 2: Atoms, Molecules, Ions",
+        chapterZh: "第 2 章：原子、分子、離子",
+        coreEn: "Atoms are the smallest medical grammar of matter, and ions run physiology.",
+        coreZh: "原子是物質的最小醫學語法，離子則驅動生理功能。",
+        focusEn: "Ions explain membrane potential, electrolyte balance, acid-base control, enzyme function, and many drug actions.",
+        focusZh: "離子可以解釋膜電位、電解質平衡、酸鹼控制、酵素功能與許多藥物作用。",
+        modules: ["Atomic theory", "Protons", "Neutrons", "Electrons", "Atomic number", "Isotopes", "Ions", "Molecular formula"],
+        links: ["Sodium and potassium", "Calcium signaling", "Hydrogen ion and pH", "Iron in hemoglobin", "Iodine isotopes", "Magnesium and enzymes"],
+        wisdom: "Atoms build matter; ions run physiology."
+      },
+      {
+        level: 3,
+        osEn: "Reaction OS",
+        osZh: "化學反應作業系統",
+        chapterEn: "Chapter 3: Chemical Reactions and Stoichiometry",
+        chapterZh: "第 3 章：化學反應與化學計量",
+        coreEn: "Chemical reactions explain how matter changes, and stoichiometry controls the amount of change.",
+        coreZh: "化學反應解釋物質如何改變，化學計量控制改變的數量。",
+        focusEn: "Metabolism, oxygen consumption, carbon dioxide production, antidote dosing, and acid-base neutralization all depend on reaction logic.",
+        focusZh: "代謝、耗氧量、二氧化碳生成、解毒劑劑量與酸鹼中和都依賴反應邏輯。",
+        modules: ["Chemical equations", "Balancing equations", "Mole concept", "Molar mass", "Avogadro number", "Limiting reactant", "Percent yield", "Reaction types"],
+        links: ["Glucose oxidation", "Oxygen consumption", "Carbon dioxide production", "Drug metabolism", "Antidote dosing", "Acid-base neutralization"],
+        wisdom: "Reactions explain change; stoichiometry controls dose."
+      },
+      {
+        level: 4,
+        osEn: "Solution OS",
+        osZh: "溶液作業系統",
+        chapterEn: "Chapter 4 + Chapter 13: Aqueous Reactions and Properties of Solutions",
+        chapterZh: "第 4 章 + 第 13 章：水溶液反應與溶液性質",
+        coreEn: "The human body is a regulated aqueous solution system.",
+        coreZh: "人體是一個被嚴密調控的水溶液系統。",
+        focusEn: "Plasma, intracellular fluid, urine, gastric juice, and cerebrospinal fluid are all solution systems governed by concentration, electrolytes, and osmotic pressure.",
+        focusZh: "血漿、細胞內液、尿液、胃液與腦脊髓液都是由濃度、電解質與滲透壓控制的溶液系統。",
+        modules: ["Molarity", "Dilution", "Electrolytes", "Precipitation reactions", "Acid-base reactions", "Solubility", "Colligative properties", "Osmotic pressure"],
+        links: ["Normal saline", "Hypertonic saline", "Hyponatremia", "Dehydration", "Edema", "Serum osmolality"],
+        wisdom: "The body is not just made of water; it is regulated by solutions."
+      },
+      {
+        level: 5,
+        osEn: "Energy OS",
+        osZh: "能量作業系統",
+        chapterEn: "Chapter 5: Thermochemistry",
+        chapterZh: "第 5 章：熱化學",
+        coreEn: "Thermochemistry explains why reactions release or absorb energy.",
+        coreZh: "熱化學解釋反應為何釋放或吸收能量。",
+        focusEn: "It is the gateway to metabolism, ATP, fever, nutrition calories, heat stroke, and hypothermia.",
+        focusZh: "它是理解代謝、ATP、發燒、營養熱量、中暑與低體溫的入口。",
+        modules: ["Energy", "Heat", "Work", "System and surroundings", "Exothermic reactions", "Endothermic reactions", "Enthalpy", "Calorimetry"],
+        links: ["Metabolism", "ATP energy", "Fever", "Basal metabolic rate", "Nutrition calories", "Mitochondrial energy conversion"],
+        wisdom: "Life survives by controlling chemical energy flow."
+      },
+      {
+        level: 6,
+        osEn: "Quantum OS",
+        osZh: "量子化學作業系統",
+        chapterEn: "Chapter 6: Electronic Structure of Atoms",
+        chapterZh: "第 6 章：原子電子結構",
+        coreEn: "Electron structure determines how atoms absorb light, form bonds, and transfer electrons.",
+        coreZh: "電子結構決定原子如何吸收光、形成鍵與轉移電子。",
+        focusEn: "This level connects chemistry to spectroscopy, pulse oximetry, phototherapy, free radicals, and mitochondrial electron transfer.",
+        focusZh: "此層連接光譜學、脈搏血氧、光照治療、自由基與粒線體電子傳遞。",
+        modules: ["Electromagnetic radiation", "Photons", "Atomic spectra", "Bohr model", "Quantum numbers", "Orbitals", "Electron configuration", "Valence electrons"],
+        links: ["Spectroscopy", "Pulse oximetry", "Phototherapy", "Free radicals", "Transition metals", "Mitochondrial electron transfer"],
+        wisdom: "Electron structure is the hidden code behind chemical behavior."
+      },
+      {
+        level: 7,
+        osEn: "Periodic OS",
+        osZh: "元素週期作業系統",
+        chapterEn: "Chapter 7: Periodic Properties",
+        chapterZh: "第 7 章：週期性質",
+        coreEn: "The periodic table is a prediction map for element behavior.",
+        coreZh: "週期表是預測元素行為的地圖。",
+        focusEn: "It explains ionic size, electronegativity, metallic character, reactivity, and the function of essential elements in physiology.",
+        focusZh: "它解釋離子大小、電負度、金屬性、反應性與生理必需元素的功能。",
+        modules: ["Periodic table structure", "Effective nuclear charge", "Atomic radius", "Ionization energy", "Electron affinity", "Electronegativity", "Metallic character", "Periodic trends"],
+        links: ["Sodium-potassium physiology", "Calcium and magnesium", "Iron and copper redox biology", "Iodine and thyroid hormone", "Fluoride and teeth", "Lithium pharmacology"],
+        wisdom: "The periodic table predicts how elements behave in the body."
+      },
+      {
+        level: 8,
+        osEn: "Chemical Bond OS",
+        osZh: "化學鍵作業系統",
+        chapterEn: "Chapter 8: Chemical Bonding",
+        chapterZh: "第 8 章：化學鍵",
+        coreEn: "Chemical bonds turn atoms into stable molecules with biological function.",
+        coreZh: "化學鍵讓原子形成具有生物功能的穩定分子。",
+        focusEn: "Proteins, DNA, drugs, receptors, enzymes, and membranes all depend on bonding rules.",
+        focusZh: "蛋白質、DNA、藥物、受體、酵素與細胞膜都依賴化學鍵規則。",
+        modules: ["Ionic bond", "Covalent bond", "Metallic bond", "Lewis symbols", "Octet rule", "Bond polarity", "Electronegativity difference", "Bond energy"],
+        links: ["Peptide bond", "Phosphodiester bond", "Disulfide bond", "DNA base pairing", "Drug-receptor interaction", "Enzyme-substrate binding"],
+        wisdom: "Bonds turn atoms into biological function."
+      },
+      {
+        level: 9,
+        osEn: "Molecular Geometry OS",
+        osZh: "分子形狀作業系統",
+        chapterEn: "Supplement: Lewis Structure, VSEPR, Hybridization, Sigma Bond, Pi Bond, Polarity, Resonance, Formal Charge",
+        chapterZh: "補充：路易斯結構、VSEPR、混成軌域、Sigma 鍵、Pi 鍵、極性、共振、形式電荷",
+        coreEn: "Molecular shape determines molecular recognition.",
+        coreZh: "分子形狀決定分子如何互相辨識。",
+        focusEn: "Drug selectivity, receptor binding, enzyme activity, DNA structure, protein folding, and molecular polarity all depend on shape.",
+        focusZh: "藥物選擇性、受體結合、酵素活性、DNA 結構、蛋白質摺疊與分子極性都依賴形狀。",
+        modules: ["Lewis structure", "VSEPR", "Hybridization", "Sigma bond", "Pi bond", "Bond angle", "Molecular polarity", "Resonance", "Formal charge"],
+        links: ["Drug-receptor fit", "Enzyme active site", "Protein folding", "DNA base pairing", "Oxygen and carbon dioxide geometry", "Receptor stereoselectivity"],
+        wisdom: "Shape is chemical meaning; in medicine, shape becomes function."
+      },
+      {
+        level: 10,
+        osEn: "Gas OS",
+        osZh: "氣體作業系統",
+        chapterEn: "Chapter 10: Gases",
+        chapterZh: "第 10 章：氣體",
+        coreEn: "Gas chemistry is the foundation of respiratory physiology.",
+        coreZh: "氣體化學是呼吸生理的基礎。",
+        focusEn: "Oxygen transport, carbon dioxide removal, inhaled anesthetics, blood gas analysis, and mechanical ventilation all require gas laws.",
+        focusZh: "氧氣運輸、二氧化碳排出、吸入性麻醉、血液氣體分析與呼吸器都需要氣體定律。",
+        modules: ["Pressure", "Boyle law", "Charles law", "Avogadro law", "Ideal gas law", "Dalton law", "Partial pressure", "Gas diffusion"],
+        links: ["Alveolar ventilation", "Oxygen partial pressure", "Carbon dioxide retention", "Blood gas analysis", "Hyperbaric oxygen", "Mechanical ventilation"],
+        wisdom: "Gas laws become physiology when pressure controls breathing."
+      },
+      {
+        level: 11,
+        osEn: "Intermolecular Force OS",
+        osZh: "分子間作用力作業系統",
+        chapterEn: "Chapter 11: Intermolecular Forces",
+        chapterZh: "第 11 章：分子間作用力",
+        coreEn: "Intermolecular forces organize biological structure and molecular behavior.",
+        coreZh: "分子間作用力組織生物結構與分子行為。",
+        focusEn: "They determine boiling point, solubility, membrane permeability, protein folding, DNA pairing, and drug absorption.",
+        focusZh: "它們決定沸點、溶解度、膜通透性、蛋白質摺疊、DNA 配對與藥物吸收。",
+        modules: ["London dispersion forces", "Dipole-dipole interaction", "Hydrogen bonding", "Ion-dipole interaction", "Viscosity", "Surface tension", "Vapor pressure", "Phase changes"],
+        links: ["Water properties", "Protein folding", "DNA hydrogen bonds", "Membrane permeability", "Drug solubility", "Surfactant"],
+        wisdom: "Weak forces are strong enough to organize life."
+      },
+      {
+        level: 12,
+        osEn: "Solid State OS",
+        osZh: "固態與材料作業系統",
+        chapterEn: "Chapter 12: Solids and Modern Materials",
+        chapterZh: "第 12 章：固體與現代材料",
+        coreEn: "Solid structure controls material function in the body and in medical technology.",
+        coreZh: "固體結構控制身體與醫療科技中的材料功能。",
+        focusEn: "Bones, teeth, crystals, implants, nanomaterials, medical devices, and drug crystal forms all depend on solid-state chemistry.",
+        focusZh: "骨骼、牙齒、晶體、植入物、奈米材料、醫療器材與藥物晶型都依賴固態化學。",
+        modules: ["Types of solids", "Crystalline solids", "Amorphous solids", "Unit cells", "Ionic solids", "Molecular solids", "Metallic solids", "Semiconductors"],
+        links: ["Bone mineral", "Hydroxyapatite", "Dental enamel", "Kidney stones", "Orthopedic implants", "Drug crystal forms"],
+        wisdom: "Solid structure controls material function in the body and in medicine."
+      },
+      {
+        level: 13,
+        osEn: "Thermodynamics OS",
+        osZh: "熱力學作業系統",
+        chapterEn: "Chapter 19: Chemical Thermodynamics",
+        chapterZh: "第 19 章：化學熱力學",
+        coreEn: "Thermodynamics explains whether reactions are possible and how life maintains order.",
+        coreZh: "熱力學解釋反應是否可能，以及生命如何維持有序。",
+        focusEn: "ATP, coupled reactions, ion gradients, metabolic pathways, protein folding, and mitochondrial energy conversion all require thermodynamic thinking.",
+        focusZh: "ATP、偶聯反應、離子梯度、代謝路徑、蛋白質摺疊與粒線體能量轉換都需要熱力學思維。",
+        modules: ["Entropy", "Spontaneity", "Gibbs free energy", "Enthalpy", "Temperature", "Free energy and equilibrium", "Coupled reactions", "Biological energy coupling"],
+        links: ["ATP hydrolysis", "Metabolic pathways", "Enzyme coupling", "Oxidative phosphorylation", "Ion gradients", "Membrane potential"],
+        wisdom: "Life is a thermodynamic strategy for maintaining order by spending energy."
+      }
+    ];
+
+    const world = ["Matter", "Atom", "Ion / Molecule", "Chemical Reaction", "Stoichiometry", "Aqueous Solution", "Energy", "Quantum Structure", "Periodic Properties", "Chemical Bond", "Molecular Geometry", "Gas", "Intermolecular Forces", "Solid / Materials", "Thermodynamics", "Biochemistry", "Physiology", "Pharmacology", "Clinical Medicine"];
+
+    let selected = 0;
+    let mode = "both";
+    let voices = [];
+
+    const levelList = document.querySelector("#levelList");
+    const search = document.querySelector("#search");
+    const voiceSelect = document.querySelector("#voiceSelect");
+
+    function speak(text) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.86;
+      utterance.pitch = 1;
+      const chosen = voices.find(v => v.name === voiceSelect.value);
+      if (chosen) utterance.voice = chosen;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function loadVoices() {
+      voices = window.speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith("en"));
+      voiceSelect.innerHTML = voices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join("");
+    }
+
+    function line(en, zh) {
+      const enHidden = mode === "zh" ? "hidden" : "";
+      const zhHidden = mode === "en" ? "hidden" : "";
+      return `
+        <div class="bilingual-line">
+          <button class="speak" title="Speak English" data-speak="${escapeAttr(en)}">▶</button>
+          <div>
+            <p class="english ${enHidden}">${en}</p>
+            <p class="chinese ${zhHidden}">${zh}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeAttr(value) {
+      return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
+    }
+
+    function renderList() {
+      const q = search.value.trim().toLowerCase();
+      levelList.innerHTML = "";
+      levels.forEach((item, index) => {
+        const haystack = [item.osEn, item.osZh, item.chapterEn, item.chapterZh, item.coreEn, item.coreZh, ...item.links].join(" ").toLowerCase();
+        if (q && !haystack.includes(q)) return;
+        const btn = document.createElement("button");
+        btn.className = "level-btn" + (index === selected ? " active" : "");
+        btn.innerHTML = `<strong>Level ${item.level} · ${item.osEn}</strong><span>${item.osZh}</span><span>${item.chapterEn}</span>`;
+        btn.addEventListener("click", () => {
+          selected = index;
+          render();
+        });
+        levelList.appendChild(btn);
+      });
+    }
+
+    function render() {
+      const item = levels[selected];
+      document.querySelector("#levelNumber").textContent = `Level ${item.level}`;
+      document.querySelector("#titleEn").textContent = item.osEn;
+      document.querySelector("#titleZh").textContent = item.osZh;
+      document.querySelector("#chapter").textContent = `${item.chapterEn}｜${item.chapterZh}`;
+      document.querySelector("#bilingual").innerHTML = [
+        line(item.coreEn, item.coreZh),
+        line(item.focusEn, item.focusZh),
+        line(item.wisdom, "核心智慧：" + translateWisdom(item.level))
+      ].join("");
+
+      document.querySelector("#modules").innerHTML = item.modules.map((m, i) => {
+        const d = moduleDetail(m, item);
+        return `
+        <div class="mini">
+          <b>${String(i + 1).padStart(2, "0")} ${m}</b>
+          ${visible(expandNodeText("module", m, d.en, item), expandNodeTextZh("module", m, d.zh, item))}
+          <div class="pill-row"><span class="tag">Ontology</span><span class="tag">Core rule</span><span class="tag">High yield</span><span class="tag">Clinical</span></div>
+          <button class="speak" title="Speak ${m}" data-speak="${escapeAttr(`${m}. ${expandNodeText("module", m, d.en, item)}`)}">▶</button>
+        </div>`;
+      }).join("");
+
+      document.querySelector("#medicalLinks").innerHTML = item.links.map((m, i) => {
+        const d = medicalDetail(m, item);
+        return `
+        <div class="mini">
+          <b>Medical ${String(i + 1).padStart(2, "0")} ${m}</b>
+          ${visible(expandNodeText("medical", m, d.en, item), expandNodeTextZh("medical", m, d.zh, item))}
+          <div class="pill-row"><span class="tag">Disease</span><span class="tag">Lab</span><span class="tag">Mechanism</span><span class="tag">Safety</span></div>
+          <button class="speak" title="Speak ${m}" data-speak="${escapeAttr(`${m}. ${expandNodeText("medical", m, d.en, item)}`)}">▶</button>
+        </div>`;
+      }).join("");
+
+      document.querySelector("#wisdom").innerHTML = `
+        <div class="${mode === "zh" ? "hidden" : ""}">${item.wisdom}</div>
+        <div class="${mode === "en" ? "hidden" : ""}">${translateWisdom(item.level)}</div>
+      `;
+
+      renderDeepModules(item);
+      renderStudyOptimized(item);
+      renderLecturePack(item);
+      renderIntegratedMindMap(item);
+
+      document.querySelector("#worldMap").innerHTML = world.map(w => {
+        const active = item.osEn.toLowerCase().includes(w.split(" ")[0].toLowerCase()) || item.chapterEn.toLowerCase().includes(w.split(" ")[0].toLowerCase());
+        const d = worldDetail(w);
+        return `<div class="map-item ${active ? "active" : ""}"><span class="dot"></span><span><b>${w}</b><br><small class="${mode === "zh" ? "hidden" : ""}">${d.en}</small><small class="${mode === "en" ? "hidden" : ""}">${d.zh}</small></span></div>`;
+      }).join("");
+
+      document.querySelector("#appModules").innerHTML = appModuleDetails().map(x => card(x.en, x.zh, x.bodyEn, x.bodyZh)).join("");
+
+      renderList();
+      attachSpeakButtons();
+    }
+
+
+    function visible(en, zh) {
+      return `
+        <p class="english ${mode === "zh" ? "hidden" : ""}">${en}</p>
+        <p class="chinese ${mode === "en" ? "hidden" : ""}">${zh}</p>
+      `;
+    }
+
+    function speakMini(text) {
+      return `<button class="speak" title="Speak English" data-speak="${escapeAttr(text)}">▶</button>`;
+    }
+
+    function card(titleEn, titleZh, bodyEn, bodyZh) {
+      return `
+        <div class="module-card">
+          <h4>${mode === "zh" ? titleZh : titleEn}<br><span class="${mode === "en" ? "hidden" : ""}">${mode === "both" ? titleZh : ""}</span></h4>
+          ${visible(bodyEn, bodyZh)}
+          ${speakMini(`${titleEn}. ${bodyEn}`)}
+        </div>
+      `;
+    }
+
+
+
+
+    function expandNodeText(type, name, base, item) {
+      if (type === "module") {
+        return `${base} ${moduleFacts(name, item).en}`;
+      }
+      return `${base} Clinical layer: chemistry basis, symptoms, lab values, disease mechanism, treatment logic, and safety risk. High-yield point: mechanism behind the clinical finding.`;
+    }
+
+    function expandNodeTextZh(type, name, base, item) {
+      if (type === "module") {
+        return `${base} ${moduleFacts(name, item).zh}`;
+      }
+      return `${base} 臨床層：化學基礎、症狀、檢驗值、疾病機制、治療邏輯與安全風險。高頻重點：臨床表現背後的機制。`;
+    }
+
+    function renderIntegratedMindMap(item) {
+      const formula = formulaFor(item.level);
+      const triggers = triggerWords(item.level);
+      const branches = [
+        {
+          en: "Required Modules",
+          zh: "必建模組",
+          itemsEn: item.modules.map(m => `${m}: definition, core rule, exam point, medical connection`),
+          itemsZh: item.modules.map(m => `${m}：定義、核心規則、考點、醫學連結`)
+        },
+        {
+          en: "Medical Links",
+          zh: "醫學連結",
+          itemsEn: item.links.map(m => `${m}: chemical basis, physiological effect, clinical meaning`),
+          itemsZh: item.links.map(m => `${m}：化學基礎、生理效應、臨床意義`)
+        },
+        {
+          en: "Minimal Memory Pack",
+          zh: "最小記憶包",
+          itemsEn: [item.wisdom, formula.en, `Trigger words: ${triggers.en.join(", ")}`, `${item.modules[0]} -> ${item.links[0]} -> clinical interpretation`],
+          itemsZh: [translateWisdom(item.level), formula.zh, `觸發字：${triggers.zh.join("、")}`, `${item.modules[0]} → ${item.links[0]} → 臨床判讀`]
+        },
+        {
+          en: "Best Application",
+          zh: "最好運用",
+          itemsEn: [`${item.osEn}: active chapter node`, `${formula.en}`, `Units and direction: required for correct interpretation`, `${item.links[0]}: clinical output`],
+          itemsZh: [`${item.osZh}：目前章節節點`, `${formula.zh}`, `單位與方向：正確判讀必備`, `「${item.links[0]}」：臨床輸出`]
+        },
+        {
+          en: "Exam Content Map",
+          zh: "考題內容地圖",
+          itemsEn: ["Definition content", "Formula content", "Comparison content", "Clinical vignette content", "Common trap content"],
+          itemsZh: ["定義內容", "公式內容", "比較內容", "臨床病例內容", "常見陷阱內容"]
+        },
+        {
+          en: "APP Modules",
+          zh: "APP 模組",
+          itemsEn: appModuleDetails().map(x => `${x.en}: ${x.bodyEn}`),
+          itemsZh: appModuleDetails().map(x => `${x.zh}：${x.bodyZh}`)
+        }
+      ];
+      document.querySelector("#integratedMindMap").innerHTML = `
+        <div class="mind-center">
+          <div class="${mode === "zh" ? "hidden" : ""}">${item.osEn}: ${item.wisdom}</div>
+          <div class="${mode === "en" ? "hidden" : ""}">${item.osZh}：${translateWisdom(item.level)}</div>
+          ${speakMini(`${item.osEn}. ${item.wisdom}`)}
+        </div>
+        <div class="mind-branches">
+          ${branches.map(b => `
+            <div class="mind-branch">
+              <h4>${mode === "zh" ? b.zh : b.en}<br><span class="${mode === "en" ? "hidden" : ""}">${mode === "both" ? b.zh : ""}</span></h4>
+              <ul class="${mode === "zh" ? "hidden" : ""}">${b.itemsEn.map(x => `<li>${x}</li>`).join("")}</ul>
+              <ul class="${mode === "en" ? "hidden" : ""}">${b.itemsZh.map(x => `<li>${x}</li>`).join("")}</ul>
+              ${speakMini(`${b.en}. ${b.itemsEn.join(". ")}`)}
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function moduleFacts(term, item) {
+      const specific = {
+        "Entropy": ["Entropy is the dispersal of energy and matter into more possible arrangements. In thermodynamics it predicts the direction of spontaneous change together with enthalpy and temperature. Formula link: ΔG = ΔH - TΔS. Unit: J/K or J mol⁻¹ K⁻¹. Clinical meaning: ATP hydrolysis and metabolic coupling increase total entropy while cells preserve local order.", "Entropy（熵）是能量與物質分散到更多可能排列的程度。熱力學中，熵會和焓、溫度一起決定自發變化方向。公式連結：ΔG = ΔH - TΔS。單位：J/K 或 J mol⁻¹ K⁻¹。臨床意義：ATP 水解與代謝偶聯讓總熵增加，同時讓細胞維持局部秩序。"],
+        "Spontaneity": ["Spontaneity means thermodynamic favorability, not speed. A spontaneous process has negative ΔG under the stated conditions. Clinical meaning: favorable and unfavorable reactions are coupled in metabolism.", "Spontaneity（自發性）代表熱力學上有利，不代表反應速度快。在特定條件下 ΔG < 0 的過程具有自發性。臨床意義：代謝中有利反應會和不利反應偶聯。"],
+        "Gibbs free energy": ["Gibbs free energy is usable chemical energy at constant temperature and pressure. Formula: ΔG = ΔH - TΔS. Unit: kJ/mol. Clinical meaning: ATP, ion gradients, and biosynthesis depend on free-energy coupling.", "Gibbs free energy（吉布斯自由能）是在定溫定壓下可用的化學能。公式：ΔG = ΔH - TΔS。單位：kJ/mol。臨床意義：ATP、離子梯度與生合成都依賴自由能偶聯。"],
+        "Enthalpy": ["Enthalpy is heat content at constant pressure. Exothermic processes release heat; endothermic processes absorb heat. Unit: kJ/mol. Clinical meaning: metabolism, fever, and heat balance are enthalpy-linked phenomena.", "Enthalpy（焓）是在定壓下的熱含量。放熱過程釋放熱，吸熱過程吸收熱。單位：kJ/mol。臨床意義：代謝、發燒與熱平衡都和焓變有關。"],
+        "Temperature": ["Temperature scales the entropy term in ΔG = ΔH - TΔS. Higher temperature increases the influence of entropy on spontaneity. Clinical meaning: fever changes reaction rates, protein stability, and metabolic demand.", "Temperature（溫度）會放大 ΔG = ΔH - TΔS 中的熵項。溫度越高，熵對自發性的影響越大。臨床意義：發燒會改變反應速率、蛋白質穩定性與代謝需求。"],
+        "Free energy and equilibrium": ["Free energy and equilibrium are linked by ΔG = ΔG° + RT ln Q. At equilibrium, ΔG = 0. Clinical meaning: oxygen binding, buffer systems, and metabolic direction depend on equilibrium position.", "自由能與平衡由 ΔG = ΔG° + RT ln Q 連接。達平衡時 ΔG = 0。臨床意義：氧氣結合、緩衝系統與代謝方向都取決於平衡位置。"],
+        "Coupled reactions": ["Coupled reactions use a favorable process to drive an unfavorable process. ATP hydrolysis commonly supplies the negative ΔG. Clinical meaning: biosynthesis, active transport, and phosphorylation depend on coupling.", "偶聯反應用有利反應推動不利反應。ATP 水解常提供負的 ΔG。臨床意義：生合成、主動運輸與磷酸化都依賴偶聯。"],
+        "Biological energy coupling": ["Biological energy coupling converts food energy, redox energy, and ion gradients into ATP-dependent work. Clinical meaning: mitochondrial dysfunction reduces ATP supply and disrupts high-energy tissues.", "生物能量偶聯把食物能、氧化還原能與離子梯度轉成 ATP 相關的功。臨床意義：粒線體功能障礙會降低 ATP 供應，特別影響高耗能組織。"],
+        "Atomic theory": ["Rule: atoms are conserved and rearranged during reactions. Formula link: balanced equations preserve atom count. Unit link: atoms connect to moles through Avogadro number. Clinical meaning: drug molecules and metabolites follow atom conservation.", "規則：原子在反應中守恆並重新排列。公式連結：平衡方程式保留原子數。單位連結：原子透過亞佛加厥常數連到莫耳。臨床意義：藥物分子與代謝物都遵守原子守恆。"],
+        "Protons": ["Protons define elemental identity. Formula link: atomic number = proton count. Unit link: count, charge +1. Clinical meaning: H+ concentration defines pH and acid-base status.", "質子決定元素身份。公式連結：原子序 = 質子數。單位連結：數目、電荷 +1。臨床意義：H+ 濃度決定 pH 與酸鹼狀態。"],
+        "Neutrons": ["Neutrons define isotope mass and nuclear stability. Formula link: mass number = protons + neutrons. Clinical meaning: medical isotopes differ by neutron number.", "中子決定同位素質量與核穩定性。公式連結：質量數 = 質子數 + 中子數。臨床意義：醫學同位素差異來自中子數。"],
+        "Electrons": ["Electrons control bonding, charge, spectra, and redox behavior. Formula link: ion charge reflects proton-electron imbalance. Clinical meaning: electron transfer powers mitochondria and oxidative stress.", "電子控制鍵結、電荷、光譜與氧化還原行為。公式連結：離子電荷反映質子與電子不平衡。臨床意義：電子轉移驅動粒線體，也參與氧化壓力。"],
+        "Atomic number": ["Atomic number is the proton count and element ID. It organizes the periodic table. Clinical meaning: element identity determines electrolyte and trace-element behavior.", "原子序是質子數，也是元素身份。它組織週期表。臨床意義：元素身份決定電解質與微量元素行為。"],
+        "Isotopes": ["Isotopes share proton number but differ in neutron number. Clinical meaning: iodine and other radioisotopes support imaging, tracing, and therapy.", "同位素質子數相同、中子數不同。臨床意義：碘與其他放射同位素可用於影像、追蹤與治療。"],
+        "Ions": ["Ions are charged atoms or molecules. Formula link: charge = protons - electrons. Unit link: mmol/L in clinical labs. Clinical meaning: Na+, K+, Ca2+, H+, Mg2+ regulate excitability, pH, contraction, and enzymes.", "離子是帶電的原子或分子。公式連結：電荷 = 質子數 - 電子數。單位連結：臨床檢驗常用 mmol/L。臨床意義：Na+、K+、Ca2+、H+、Mg2+ 調控興奮性、pH、收縮與酵素。"],
+        "Molecular formula": ["Molecular formula gives the actual atom count in a molecule. It links atoms to drugs, metabolites, and biomolecules. Clinical meaning: formula changes alter mass, polarity, and biological effect.", "分子式給出一個分子的真實原子數。它把原子連到藥物、代謝物與生物分子。臨床意義：分子式改變會改變質量、極性與生物效應。"]
+      };
+      if (specific[term]) return { en: specific[term][0], zh: specific[term][1] };
+      const formula = formulaFor(item.level);
+      const comparison = comparisonFor(item.level);
+      const unit = unitFor(item.level);
+      return {
+        en: `Rule: ${term} belongs to ${item.osEn} and is governed by ${formula.en} Unit frame: ${unit.en}. Clinical link: ${item.links[0]}. High-yield comparison: ${comparison.en}.`,
+        zh: `規則：${term} 屬於 ${item.osZh}，核心由「${formula.zh}」統整。單位框架：${unit.zh}。臨床連結：「${item.links[0]}」。高頻比較：${comparison.zh}。`
+      };
+    }
+
+    function unitFor(level) {
+      const map = {
+        1: ["mass, volume, density, temperature, significant figures", "質量、體積、密度、溫度、有效數字"],
+        2: ["particle count, charge, atomic mass, molar mass", "粒子數、電荷、原子量、莫耳質量"],
+        3: ["mol, g/mol, stoichiometric ratio, percent yield", "mol、g/mol、化學計量比、產率"],
+        4: ["mol/L, osmoles, dilution volume, ion concentration", "mol/L、滲透莫耳、稀釋體積、離子濃度"],
+        5: ["J, kJ/mol, °C, heat capacity", "J、kJ/mol、°C、熱容量"],
+        6: ["wavelength, frequency, energy, electron configuration", "波長、頻率、能量、電子組態"],
+        7: ["atomic radius, ionization energy, electronegativity", "原子半徑、游離能、電負度"],
+        8: ["bond energy, electronegativity difference, formal charge", "鍵能、電負度差、形式電荷"],
+        9: ["steric number, bond angle, formal charge, polarity", "立體數、鍵角、形式電荷、極性"],
+        10: ["pressure, volume, moles, temperature, partial pressure", "壓力、體積、莫耳數、溫度、分壓"],
+        11: ["boiling point, vapor pressure, viscosity, surface tension", "沸點、蒸氣壓、黏度、表面張力"],
+        12: ["unit cell, density, packing, lattice structure", "晶胞、密度、堆積、晶格結構"],
+        13: ["entropy, enthalpy, temperature, Gibbs free energy", "熵、焓、溫度、吉布斯自由能"]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+
+    function comparisonFor(level) {
+      const map = {
+        1: ["accuracy vs precision; physical vs chemical property", "準確度 vs 精密度；物理性質 vs 化學性質"],
+        2: ["atom vs ion; isotope vs element; molecular formula vs empirical formula", "原子 vs 離子；同位素 vs 元素；分子式 vs 實驗式"],
+        3: ["reactant vs product; limiting vs excess reactant", "反應物 vs 生成物；限量反應物 vs 過量反應物"],
+        4: ["electrolyte vs nonelectrolyte; hypertonic vs hypotonic", "電解質 vs 非電解質；高張 vs 低張"],
+        5: ["exothermic vs endothermic; heat vs temperature", "放熱 vs 吸熱；熱量 vs 溫度"],
+        6: ["orbital vs orbit; wavelength vs frequency", "軌域 vs 軌道；波長 vs 頻率"],
+        7: ["atomic radius vs ionization energy; electronegativity vs electron affinity", "原子半徑 vs 游離能；電負度 vs 電子親和力"],
+        8: ["ionic vs covalent bond; polar vs nonpolar bond", "離子鍵 vs 共價鍵；極性鍵 vs 非極性鍵"],
+        9: ["electron geometry vs molecular geometry; sigma vs pi bond", "電子域幾何 vs 分子幾何；sigma 鍵 vs pi 鍵"],
+        10: ["total pressure vs partial pressure; ideal vs real gas", "總壓 vs 分壓；理想氣體 vs 真實氣體"],
+        11: ["hydrogen bond vs dipole-dipole; vapor pressure vs boiling point", "氫鍵 vs 偶極作用；蒸氣壓 vs 沸點"],
+        12: ["crystalline vs amorphous; ionic solid vs metallic solid", "晶體 vs 非晶體；離子固體 vs 金屬固體"],
+        13: ["enthalpy vs entropy; ΔG vs ΔG°; spontaneous vs fast", "焓 vs 熵；ΔG vs ΔG°；自發 vs 快速"]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+    function moduleDetail(term, item) {
+      const atom = {
+        "Atomic theory": ["Atomic theory says that matter is made of atoms, and atoms rearrange during chemical reactions without disappearing. For exams, use it to explain conservation of mass and why formulas represent real particle ratios.", "原子理論說：物質由原子組成，化學反應只是原子重新排列，不是憑空消失。考試時用它解釋質量守恆，以及為什麼化學式代表真實粒子比例。"],
+        "Protons": ["Protons are positively charged particles in the nucleus. The number of protons defines the element, so changing protons means changing the identity of the atom.", "質子是在原子核內帶正電的粒子。質子數決定元素身份，所以改變質子數就是改變元素本身。"],
+        "Neutrons": ["Neutrons are neutral particles in the nucleus. They change isotope identity and nuclear stability without changing the chemical element.", "中子是在原子核內不帶電的粒子。它會改變同位素與核穩定性，但不改變元素種類。"],
+        "Electrons": ["Electrons are negatively charged particles outside the nucleus. They control bonding, ions, electricity, light absorption, and most chemical behavior.", "電子是在原子核外帶負電的粒子。它控制化學鍵、離子、導電、吸光，以及大多數化學行為。"],
+        "Atomic number": ["Atomic number equals the number of protons. It is the fastest way to identify an element on the periodic table.", "原子序等於質子數。它是在週期表上辨認元素最快的方法。"],
+        "Isotopes": ["Isotopes are atoms of the same element with different neutron numbers. In medicine, isotopes matter in imaging, tracing, radiation therapy, and thyroid studies.", "同位素是同一元素但中子數不同的原子。在醫學上，同位素用於影像、追蹤、放射治療與甲狀腺檢查。"],
+        "Ions": ["Ions are atoms or molecules with net charge. In physiology, sodium, potassium, calcium, chloride, hydrogen, and magnesium ions control signaling, pH, contraction, and enzyme activity.", "離子是帶淨電荷的原子或分子。在生理中，鈉、鉀、鈣、氯、氫、鎂離子控制訊號、pH、收縮與酵素活性。"],
+        "Molecular formula": ["A molecular formula tells the actual number of each atom in a molecule. It is the bridge from atomic parts to real chemical substances, drugs, and biomolecules.", "分子式告訴你一個分子中每種原子的真實數量。它是從原子零件走向真實化學物、藥物與生物分子的橋。"]
+      };
+      if (atom[term]) return { en: atom[term][0], zh: atom[term][1] };
+      return {
+        en: `${term} is a required node inside ${item.osEn}. Content: definition, controlled rule, linked formula or diagram, and medical situation.` ,
+        zh: `${term} 是 ${item.osZh} 裡的必學節點。內容包含：定義、控制規則、相關公式或圖像、醫學情境中的功能。`
+      };
+    }
+
+    function medicalDetail(term, item) {
+      const atomMedical = {
+        "Sodium and potassium": ["Sodium and potassium create electrochemical gradients across cell membranes. This is the chemistry behind nerve impulses, muscle contraction, ECG changes, and dangerous electrolyte disorders.", "鈉和鉀在細胞膜兩側形成電化學梯度。這是神經衝動、肌肉收縮、心電圖變化與危險電解質異常背後的化學。"],
+        "Calcium signaling": ["Calcium ions act like cellular switches. They trigger muscle contraction, neurotransmitter release, blood clotting, enzyme regulation, and many intracellular signals.", "鈣離子像細胞內開關。它觸發肌肉收縮、神經傳遞物釋放、凝血、酵素調節與許多細胞內訊號。"],
+        "Hydrogen ion and pH": ["Hydrogen ion concentration defines pH. Small pH changes strongly affect proteins, enzymes, oxygen binding, acid-base balance, and patient safety.", "氫離子濃度決定 pH。很小的 pH 變化就會大幅影響蛋白質、酵素、氧氣結合、酸鹼平衡與病人安全。"],
+        "Iron in hemoglobin": ["Iron in hemoglobin binds oxygen through redox-sensitive coordination chemistry. Its chemical state helps explain anemia, oxygen transport, and carbon monoxide poisoning.", "血紅素中的鐵透過對氧化還原敏感的配位化學結合氧氣。它的化學狀態可解釋貧血、氧氣運輸與一氧化碳中毒。"],
+        "Iodine isotopes": ["Iodine isotopes connect atomic structure to thyroid medicine. They can be used to image thyroid tissue or treat overactive thyroid and some thyroid cancers.", "碘同位素把原子結構連到甲狀腺醫學。它們可用於甲狀腺影像，也可治療甲狀腺亢進與部分甲狀腺癌。"],
+        "Magnesium and enzymes": ["Magnesium stabilizes ATP and supports many enzymes. Clinically, magnesium affects neuromuscular excitability, arrhythmia risk, and obstetric emergency treatment.", "鎂可以穩定 ATP 並支援許多酵素。臨床上，鎂影響神經肌肉興奮性、心律不整風險與產科急症治療。"]
+      };
+      if (atomMedical[term]) return { en: atomMedical[term][0], zh: atomMedical[term][1] };
+      return {
+        en: `${term} is the medical bridge for ${item.osEn}. Content: chemistry concept, symptom pattern, lab interpretation, treatment logic, and safety risk.`,
+        zh: `${term} 是 ${item.osZh} 的醫學橋樑。用它把化學概念翻譯成症狀、檢驗判讀、治療邏輯或安全風險。`
+      };
+    }
+
+    function worldDetail(node) {
+      const map = {
+        "Matter": ["Everything measurable begins here.", "所有可測量的東西從這裡開始。"],
+        "Atom": ["The identity unit of elements.", "元素身份的基本單位。"],
+        "Ion / Molecule": ["Charged particles and bonded atoms become physiology and drugs.", "帶電粒子與鍵結原子變成生理與藥物。"],
+        "Chemical Reaction": ["Matter changes by rearranging bonds and atoms.", "物質透過原子與化學鍵重排而改變。"],
+        "Stoichiometry": ["The quantity control system of reactions and dosing.", "反應與劑量的數量控制系統。"],
+        "Aqueous Solution": ["The body is mostly regulated water chemistry.", "人體多數調控都是水溶液化學。"],
+        "Energy": ["Chemical energy becomes heat, work, ATP, and metabolism.", "化學能變成熱、功、ATP 與代謝。"],
+        "Quantum Structure": ["Electron arrangement explains bonding and light behavior.", "電子排列解釋鍵結與光學行為。"],
+        "Periodic Properties": ["Element trends predict body chemistry.", "元素趨勢預測身體化學。"],
+        "Chemical Bond": ["Bonds build biomolecules and drug structures.", "化學鍵建構生物分子與藥物結構。"],
+        "Molecular Geometry": ["Shape determines recognition and function.", "形狀決定辨識與功能。"],
+        "Gas": ["Pressure and diffusion become respiration.", "壓力與擴散變成呼吸生理。"],
+        "Intermolecular Forces": ["Weak attractions organize water, membranes, proteins, and drugs.", "弱吸引力組織水、膜、蛋白質與藥物。"],
+        "Solid / Materials": ["Structure controls bones, crystals, implants, and devices.", "結構控制骨骼、結晶、植入物與器材。"],
+        "Thermodynamics": ["Free energy decides what can happen.", "自由能決定什麼反應可能發生。"],
+        "Biochemistry": ["Chemistry becomes life molecules.", "化學變成生命分子。"],
+        "Physiology": ["Molecules become body function.", "分子變成身體功能。"],
+        "Pharmacology": ["Chemistry becomes drug action.", "化學變成藥物作用。"],
+        "Clinical Medicine": ["Chemical rules become diagnosis and treatment.", "化學規則變成診斷與治療。"]
+      };
+      const v = map[node] || ["A connected node in the medical chemistry world model.", "醫學化學世界模型中的連接節點。"];
+      return { en: v[0], zh: v[1] };
+    }
+
+    function appModuleDetails(item = levels[selected]) {
+      const formula = formulaFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const triggers = triggerWords(item.level);
+      const firstDisease = diseases[0];
+      const secondDisease = diseases[1] || diseases[0];
+      return [
+        {
+          en: "OS Dashboard",
+          zh: "OS 儀表板",
+          bodyEn: `${item.osEn}. Core wisdom: ${item.wisdom}. High-yield nodes: ${item.modules.slice(0, 4).join(", ")}. Clinical anchors: ${item.links.slice(0, 3).join(", ")}.`,
+          bodyZh: `${item.osZh}。核心智慧：${translateWisdom(item.level)}。高頻節點：${item.modules.slice(0, 4).join("、")}。臨床錨點：${item.links.slice(0, 3).join("、")}。`
+        },
+        {
+          en: "Bilingual Reader",
+          zh: "雙語閱讀器",
+          bodyEn: `English core: ${item.coreEn} Key sentence: ${item.focusEn} Key terms: ${item.modules.slice(0, 5).join(", ")}.`,
+          bodyZh: `中文核心：${item.coreZh} 關鍵句：${item.focusZh} 關鍵詞：${item.modules.slice(0, 5).join("、")}。`
+        },
+        {
+          en: "Audio English",
+          zh: "英文朗讀",
+          bodyEn: `Pronunciation set: ${item.osEn}; ${item.chapterEn}; ${item.modules.slice(0, 6).join("; ")}; ${item.links.slice(0, 4).join("; ")}.`,
+          bodyZh: `朗讀內容：${item.osEn}；${item.chapterEn}；${item.modules.slice(0, 6).join("；")}；${item.links.slice(0, 4).join("；")}。`
+        },
+        {
+          en: "Formula Lab",
+          zh: "公式實驗室",
+          bodyEn: `Core formula: ${formula.en} Variables and units: ${item.modules.slice(0, 3).join(", ")}. Clinical output: ${item.links[0]}. Common trap: unit, direction, or mechanism mismatch.`,
+          bodyZh: `核心公式：${formula.zh}。變數與單位：${item.modules.slice(0, 3).join("、")}。臨床輸出：「${item.links[0]}」。常見陷阱：單位、方向或機制不一致。`
+        },
+        {
+          en: "Quiz Bank",
+          zh: "題庫模式",
+          bodyEn: `Q1: ${item.links[0]} maps to ${item.osEn}. A1: ${item.modules[0]}. Q2: core rule in this node. A2: ${formula.en}. Q3: clinical bridge. A3: ${item.links.slice(0, 3).join(", ")}.`,
+          bodyZh: `題 1：「${item.links[0]}」對應 ${item.osZh}。答：${item.modules[0]}。題 2：本節點核心規則。答：${formula.zh}。題 3：臨床橋接。答：${item.links.slice(0, 3).join("、")}。`
+        },
+        {
+          en: "Anki Mode",
+          zh: "Anki 模式",
+          bodyEn: `Card 1 front: ${item.osEn}. Back: ${item.wisdom}. Card 2 front: ${formula.en}. Back: ${item.links[0]}. Card 3 front: ${triggers.en.slice(0, 3).join(", ")}. Back: ${item.osEn}.`,
+          bodyZh: `卡 1 正面：${item.osZh}。背面：${translateWisdom(item.level)}。卡 2 正面：${formula.zh}。背面：${item.links[0]}。卡 3 正面：${triggers.zh.slice(0, 3).join("、")}。背面：${item.osZh}。`
+        },
+        {
+          en: "Clinical Bridge",
+          zh: "臨床橋接",
+          bodyEn: `${firstDisease.en}: ${firstDisease.bodyEn} ${secondDisease.en}: ${secondDisease.bodyEn} Lab and safety anchors: ${item.links.slice(0, 4).join(", ")}.`,
+          bodyZh: `${firstDisease.zh}：${firstDisease.bodyZh} ${secondDisease.zh}：${secondDisease.bodyZh} 檢驗與安全錨點：${item.links.slice(0, 4).join("、")}。`
+        },
+        {
+          en: "Knowledge Graph",
+          zh: "知識圖譜",
+          bodyEn: `${item.modules[0]} -> ${item.modules[1] || item.osEn} -> ${item.modules[2] || item.osEn} -> ${item.links[0]} -> ${firstDisease.en} -> ${item.wisdom}`,
+          bodyZh: `${item.modules[0]} → ${item.modules[1] || item.osZh} → ${item.modules[2] || item.osZh} → ${item.links[0]} → ${firstDisease.zh} → ${translateWisdom(item.level)}`
+        }
+      ];
+    }
+
+    function renderLecturePack(item) {
+      document.querySelector("#lecturePack").innerHTML = buildLecturePack(item);
+      document.querySelector("#understandingPack").innerHTML = buildUnderstandingPack(item);
+    }
+
+    function buildLecturePack(item) {
+      const formula = formulaFor(item.level);
+      const unit = unitFor(item.level);
+      const compare = comparisonFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const facts = moduleFacts(item.modules[0], item);
+      return `
+        <div class="lecture-block">
+          <h4>${mode === "zh" ? "完整講義" : "Complete Lecture"}</h4>
+          ${visible(
+            `${item.osEn} is the chapter engine for ${item.coreEn.toLowerCase()} The core content begins with ${item.modules[0]}, expands into ${item.modules.slice(1, 5).join(", ")}, and becomes medically useful through ${item.links.slice(0, 4).join(", ")}. ${facts.en}`,
+            `${item.osZh} 是本章的知識引擎，核心是「${item.coreZh}」。內容從 ${item.modules[0]} 開始，擴展到 ${item.modules.slice(1, 5).join("、")}，最後透過「${item.links.slice(0, 4).join("、")}」形成醫學用途。${facts.zh}`
+          )}
+          ${visible(
+            `The mathematical or rule layer is: ${formula.en} The unit frame is: ${unit.en}. The most important comparison is: ${compare.en}. The first disease bridge is ${diseases[0].en}: ${diseases[0].bodyEn}`,
+            `數學或規則層是：${formula.zh}。單位框架是：${unit.zh}。最重要比較是：${compare.zh}。第一個疾病橋接是 ${diseases[0].zh}：${diseases[0].bodyZh}`
+          )}
+          ${speakMini(`${item.osEn}. ${item.coreEn}. ${formula.en}. ${diseases[0].en}. ${diseases[0].bodyEn}`)}
+        </div>
+        <div class="lecture-block">
+          <h4>${mode === "zh" ? "白話讀通版" : "Plain-Language Mastery"}</h4>
+          ${visible(
+            `${plainMastery(item).en} The mental picture is: ${item.modules[0]} changes the rule, the rule changes ${item.links[0]}, and ${item.links[0]} becomes a clinical clue. The chapter is mastered when the student can connect term, rule, unit, comparison, disease, and safety in one chain.`,
+            `${plainMastery(item).zh} 心中圖像是：${item.modules[0]} 改變規則，規則改變「${item.links[0]}」，而「${item.links[0]}」變成臨床線索。能把名詞、規則、單位、比較、疾病與安全串成一條鏈，就算讀通本章。`
+          )}
+          ${flowNodes([item.modules[0], formula.en, item.links[0], diseases[0].en, item.wisdom])}
+          ${speakMini(`${plainMastery(item).en}. ${item.modules[0]} to ${item.links[0]} to ${diseases[0].en}`)}
+        </div>
+      `;
+    }
+
+    function buildUnderstandingPack(item) {
+      const formula = formulaFor(item.level);
+      const unit = unitFor(item.level);
+      const compare = comparisonFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const triggers = triggerWords(item.level);
+      return `
+        ${visualPoster(
+          "Prerequisite Map",
+          "先備知識地圖",
+          `<table class="compare-table"><tr><th>Before this chapter</th><td>${previousNode(item.level).en}</td></tr><tr><th>Current node</th><td>${item.osEn}</td></tr><tr><th>Next medical bridge</th><td>${item.links.slice(0, 3).join(", ")}</td></tr><tr><th>Essential vocabulary</th><td>${item.modules.slice(0, 6).join(", ")}</td></tr></table>`,
+          `<table class="compare-table"><tr><th>本章之前</th><td>${previousNode(item.level).zh}</td></tr><tr><th>目前節點</th><td>${item.osZh}</td></tr><tr><th>下一層醫學橋</th><td>${item.links.slice(0, 3).join("、")}</td></tr><tr><th>必備詞彙</th><td>${item.modules.slice(0, 6).join("、")}</td></tr></table>`,
+          `${item.osEn}. prerequisite map.`
+        )}
+        ${visualPoster(
+          "Worked Example",
+          "核心例題",
+          `<div class="worked-example"><b>Given</b><span>${item.links[0]} appears in a clinical context.</span><b>Rule</b><span>${formula.en}</span><b>Unit frame</b><span>${unit.en}</span><b>Conclusion</b><span>${item.links[0]} is interpreted through ${item.osEn} and connected to ${diseases[0].en}.</span></div>`,
+          `<div class="worked-example"><b>已知</b><span>臨床情境出現「${item.links[0]}」。</span><b>規則</b><span>${formula.zh}</span><b>單位框架</b><span>${unit.zh}</span><b>結論</b><span>「${item.links[0]}」透過 ${item.osZh} 判讀，並連到 ${diseases[0].zh}。</span></div>`,
+          `${item.links[0]}. ${formula.en}. ${diseases[0].en}`
+        )}
+        ${visualPoster(
+          "FAQ Page",
+          "常見問題頁",
+          `<table class="compare-table"><tr><th>Q</th><th>A</th></tr><tr><td>Core idea?</td><td>${item.coreEn}</td></tr><tr><td>Main formula/rule?</td><td>${formula.en}</td></tr><tr><td>Main unit frame?</td><td>${unit.en}</td></tr><tr><td>Main clinical output?</td><td>${item.links[0]}</td></tr><tr><td>Main disease bridge?</td><td>${diseases[0].en}</td></tr></table>`,
+          `<table class="compare-table"><tr><th>問</th><th>答</th></tr><tr><td>核心觀念</td><td>${item.coreZh}</td></tr><tr><td>主要公式/規則</td><td>${formula.zh}</td></tr><tr><td>主要單位框架</td><td>${unit.zh}</td></tr><tr><td>主要臨床輸出</td><td>${item.links[0]}</td></tr><tr><td>主要疾病橋</td><td>${diseases[0].zh}</td></tr></table>`,
+          `${item.coreEn}. ${formula.en}. ${item.links[0]}`
+        )}
+        ${visualPoster(
+          "Confusion Killer",
+          "易混淆破解",
+          `<table class="compare-table"><tr><th>Confusing pair</th><td>${compare.en}</td></tr><tr><th>Trigger words</th><td>${triggers.en.join(", ")}</td></tr><tr><th>Clean separation</th><td>definition | mechanism | unit | clinical output</td></tr><tr><th>Clinical anchor</th><td>${item.links[0]}</td></tr></table>`,
+          `<table class="compare-table"><tr><th>易混淆比較</th><td>${compare.zh}</td></tr><tr><th>觸發字</th><td>${triggers.zh.join("、")}</td></tr><tr><th>乾淨切分</th><td>定義｜機制｜單位｜臨床輸出</td></tr><tr><th>臨床錨點</th><td>${item.links[0]}</td></tr></table>`,
+          `${compare.en}. ${triggers.en.join(", ")}`
+        )}        ${visualPoster(
+          "Mastery Checklist",
+          "讀通檢核表",
+          `<table class="compare-table"><tr><th>Mastery Item</th><th>Content</th></tr><tr><td>One-sentence core</td><td>${item.wisdom}</td></tr><tr><td>Formula/rule</td><td>${formula.en}</td></tr><tr><td>Unit frame</td><td>${unit.en}</td></tr><tr><td>High-yield comparison</td><td>${compare.en}</td></tr><tr><td>Clinical output</td><td>${item.links[0]}</td></tr><tr><td>Disease bridge</td><td>${diseases[0].en}</td></tr></table>`,
+          `<table class="compare-table"><tr><th>掌握項目</th><th>內容</th></tr><tr><td>一句核心</td><td>${translateWisdom(item.level)}</td></tr><tr><td>公式/規則</td><td>${formula.zh}</td></tr><tr><td>單位框架</td><td>${unit.zh}</td></tr><tr><td>高頻比較</td><td>${compare.zh}</td></tr><tr><td>臨床輸出</td><td>${item.links[0]}</td></tr><tr><td>疾病橋接</td><td>${diseases[0].zh}</td></tr></table>`,
+          `${item.wisdom}. ${formula.en}. ${item.links[0]}. ${diseases[0].en}`
+        )}
+      `;
+    }
+
+    function previousNode(level) {
+      const map = {
+        1: ["basic arithmetic, units, observation", "基本運算、單位、觀察"],
+        2: ["Matter and measurement", "物質與測量"],
+        3: ["Atoms, molecules, and ions", "原子、分子、離子"],
+        4: ["Chemical reactions and stoichiometry", "化學反應與化學計量"],
+        5: ["Matter, reaction, and system boundary", "物質、反應、系統邊界"],
+        6: ["Energy and atomic structure", "能量與原子結構"],
+        7: ["Electron configuration", "電子組態"],
+        8: ["Periodic properties", "週期性質"],
+        9: ["Chemical bonding", "化學鍵"],
+        10: ["Measurement and pressure", "測量與壓力"],
+        11: ["Molecular geometry and polarity", "分子形狀與極性"],
+        12: ["Intermolecular forces", "分子間作用力"],
+        13: ["Energy and equilibrium", "能量與平衡"]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+
+    function plainMastery(item) {
+      const map = {
+        1: ["This chapter turns the world into measurable medical numbers.", "本章把世界變成可測量、可判讀的醫學數字。"],
+        2: ["This chapter turns particles into physiology: atoms define matter, ions run signals.", "本章把粒子變成生理：原子定義物質，離子驅動訊號。"],
+        3: ["This chapter turns chemical change into dose, amount, and metabolic logic.", "本章把化學變化變成劑量、數量與代謝邏輯。"],
+        4: ["This chapter turns water chemistry into body-fluid medicine.", "本章把水溶液化學變成體液醫學。"],
+        5: ["This chapter turns reaction heat into metabolism and body temperature.", "本章把反應熱變成代謝與體溫。"],
+        6: ["This chapter turns electrons into bonding, light, spectra, and redox biology.", "本章把電子變成鍵結、光、光譜與氧化還原生物學。"],
+        7: ["This chapter turns the periodic table into a prediction map for body elements.", "本章把週期表變成身體元素行為的預測地圖。"],
+        8: ["This chapter turns bonds into biomolecules and drug action.", "本章把化學鍵變成生物分子與藥物作用。"],
+        9: ["This chapter turns molecular shape into recognition, binding, and function.", "本章把分子形狀變成辨識、結合與功能。"],
+        10: ["This chapter turns pressure into breathing and blood-gas interpretation.", "本章把壓力變成呼吸與血液氣體判讀。"],
+        11: ["This chapter turns weak forces into water, membranes, proteins, and drug behavior.", "本章把弱作用力變成水、膜、蛋白質與藥物行為。"],
+        12: ["This chapter turns solid structure into bone, crystal, implant, and material function.", "本章把固態結構變成骨骼、結晶、植入物與材料功能。"],
+        13: ["This chapter turns free energy into ATP, coupling, and biological order.", "本章把自由能變成 ATP、偶聯與生物秩序。"]
+      };
+      const v = map[item.level];
+      return { en: v[0], zh: v[1] };
+    }
+    function renderStudyOptimized(item) {
+      const pack = buildStudyPack(item);
+      document.querySelector("#plainTalk").innerHTML = pack.plain.map(x => card(x.en, x.zh, x.bodyEn, x.bodyZh)).join("");
+      document.querySelector("#examQuestions").innerHTML = pack.questions.map((q, i) => `
+        <div class="question-card">
+          <h4>${i + 1}. ${mode === "zh" ? q.titleZh : q.titleEn}</h4>
+          ${visible(q.questionEn, q.questionZh)}
+          <div class="answer">
+            ${visible("Answer: " + q.answerEn + " Explanation: " + q.explainEn, "答案：" + q.answerZh + " 解析：" + q.explainZh)}
+          </div>
+          ${speakMini(`${q.titleEn}. ${q.questionEn}. Answer: ${q.answerEn}. ${q.explainEn}`)}
+        </div>
+      `).join("");
+      document.querySelector("#memorizePack").innerHTML = renderMemorizeVisuals(item);
+      document.querySelector("#usePack").innerHTML = renderUseVisuals(item);
+    }
+
+
+    function visualPoster(titleEn, titleZh, htmlEn, htmlZh, speakText) {
+      return `
+        <div class="poster-card">
+          <div class="poster-title">${mode === "zh" ? titleZh : titleEn}<br><span class="${mode === "en" ? "hidden" : ""}">${mode === "both" ? titleZh : ""}</span></div>
+          <div class="${mode === "zh" ? "hidden" : ""}">${htmlEn}</div>
+          <div class="${mode === "en" ? "hidden" : ""}">${htmlZh}</div>
+          ${speakMini(speakText || titleEn)}
+        </div>
+      `;
+    }
+
+    function flowNodes(items) {
+      return `<div class="arrow-flow">${items.map((x, i) => `<span class="flow-node">${x}</span>${i < items.length - 1 ? '<span class="arrow">→</span>' : ''}`).join("")}</div>`;
+    }
+
+    function renderMemorizeVisuals(item) {
+      const formula = formulaFor(item.level);
+      const triggers = triggerWords(item.level);
+      const compare = comparisonFor(item.level);
+      const unit = unitFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const enFlow = flowNodes([item.modules[0], item.modules[1] || item.osEn, item.links[0], diseases[0].en]);
+      const zhFlow = flowNodes([item.modules[0], item.modules[1] || item.osZh, item.links[0], diseases[0].zh]);
+      return `
+        <div class="visual-grid">
+          ${visualPoster(
+            "Core Wisdom Poster",
+            "核心智慧海報",
+            `<div class="formula-box">${item.wisdom}</div><div class="quiz-mini">${item.osEn} = ${item.modules.slice(0, 3).join(" + ")} → ${item.links[0]}</div>`,
+            `<div class="formula-box">${translateWisdom(item.level)}</div><div class="quiz-mini">${item.osZh} = ${item.modules.slice(0, 3).join("＋")} → ${item.links[0]}</div>`,
+            `${item.osEn}. ${item.wisdom}`
+          )}
+          ${visualPoster(
+            "Formula Poster",
+            "公式海報",
+            `<div class="formula-box">${formula.en}</div><table class="compare-table"><tr><th>Unit Frame</th><td>${unit.en}</td></tr><tr><th>Clinical Output</th><td>${item.links[0]}</td></tr></table>`,
+            `<div class="formula-box">${formula.zh}</div><table class="compare-table"><tr><th>單位框架</th><td>${unit.zh}</td></tr><tr><th>臨床輸出</th><td>${item.links[0]}</td></tr></table>`,
+            `${formula.en}. Clinical output: ${item.links[0]}`
+          )}
+          ${visualPoster(
+            "High-Yield Comparison",
+            "高頻比較圖",
+            `<table class="compare-table"><tr><th>Pair</th><td>${compare.en}</td></tr><tr><th>Trigger Words</th><td>${triggers.en.join(", ")}</td></tr><tr><th>Anchor</th><td>${item.links[0]}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>比較組</th><td>${compare.zh}</td></tr><tr><th>觸發字</th><td>${triggers.zh.join("、")}</td></tr><tr><th>錨點</th><td>${item.links[0]}</td></tr></table>`,
+            `${compare.en}. ${triggers.en.join(", ")}`
+          )}
+          ${visualPoster(
+            "Memory Flow Diagram",
+            "記憶流程圖",
+            `${enFlow}<div class="quiz-mini">${item.modules[0]} becomes clinically meaningful through ${item.links[0]}.</div>`,
+            `${zhFlow}<div class="quiz-mini">${item.modules[0]} 透過「${item.links[0]}」形成臨床意義。</div>`,
+            `${item.modules[0]} to ${item.links[0]} to ${diseases[0].en}`
+          )}
+        </div>
+      `;
+    }
+
+    function renderUseVisuals(item) {
+      const formula = formulaFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const compare = comparisonFor(item.level);
+      const enPath = flowNodes([item.modules[0], formula.en, item.links[0], diseases[0].en, "clinical decision"]);
+      const zhPath = flowNodes([item.modules[0], formula.zh, item.links[0], diseases[0].zh, "臨床判斷"]);
+      return `
+        <div class="visual-grid">
+          ${visualPoster(
+            "Clinical Pathway",
+            "臨床路徑圖",
+            `${enPath}<div class="clinical-path"><div>Disease: ${diseases[0].en}</div><div>Mechanism: ${diseases[0].bodyEn}</div><div>Safety: unit, direction, mechanism, and context must match.</div></div>`,
+            `${zhPath}<div class="clinical-path"><div>疾病：${diseases[0].zh}</div><div>機制：${diseases[0].bodyZh}</div><div>安全：單位、方向、機制、情境必須一致。</div></div>`,
+            `${item.osEn}. ${diseases[0].en}. ${diseases[0].bodyEn}`
+          )}
+          ${visualPoster(
+            "Question Bank Card",
+            "題庫卡",
+            `<div class="quiz-mini"><b>Stem</b>: ${item.links[0]} maps to ${item.osEn}.</div><div class="quiz-mini"><b>Answer</b>: ${item.modules[0]} + ${formula.en}</div><div class="quiz-mini"><b>Explanation</b>: ${item.links[0]} is the clinical output of this chemistry rule.</div>`,
+            `<div class="quiz-mini"><b>題幹</b>：「${item.links[0]}」對應 ${item.osZh}。</div><div class="quiz-mini"><b>答案</b>：${item.modules[0]}＋${formula.zh}</div><div class="quiz-mini"><b>解析</b>：「${item.links[0]}」是這條化學規則的臨床輸出。</div>`,
+            `${item.links[0]} maps to ${item.osEn}. Answer: ${item.modules[0]}.`
+          )}
+          ${visualPoster(
+            "Mistake Trap Table",
+            "錯題陷阱表",
+            `<table class="compare-table"><tr><th>Trap</th><th>Correct Content</th></tr><tr><td>Vocabulary only</td><td>Mechanism + unit + clinical output</td></tr><tr><td>Wrong comparison</td><td>${compare.en}</td></tr><tr><td>Wrong clinical link</td><td>${item.links[0]}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>陷阱</th><th>正確內容</th></tr><tr><td>只背名詞</td><td>機制＋單位＋臨床輸出</td></tr><tr><td>比較錯誤</td><td>${compare.zh}</td></tr><tr><td>臨床連結錯誤</td><td>${item.links[0]}</td></tr></table>`,
+            `Mistake traps. ${compare.en}. ${item.links[0]}`
+          )}
+          ${visualPoster(
+            "Mini Lecture Page",
+            "講義重點頁",
+            `<table class="compare-table"><tr><th>Core</th><td>${item.wisdom}</td></tr><tr><th>Formula</th><td>${formula.en}</td></tr><tr><th>Clinical</th><td>${item.links.slice(0, 3).join(", ")}</td></tr><tr><th>Disease</th><td>${diseases.map(d => d.en).join(", ")}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>核心</th><td>${translateWisdom(item.level)}</td></tr><tr><th>公式</th><td>${formula.zh}</td></tr><tr><th>臨床</th><td>${item.links.slice(0, 3).join("、")}</td></tr><tr><th>疾病</th><td>${diseases.map(d => d.zh).join("、")}</td></tr></table>`,
+            `${item.wisdom}. ${formula.en}`
+          )}
+        </div>
+      `;
+    }
+    function memoryCard(x) {
+      return `
+        <div class="module-card">
+          <h4>${mode === "zh" ? x.zh : x.en}<br><span class="${mode === "en" ? "hidden" : ""}">${mode === "both" ? x.zh : ""}</span></h4>
+          <ul class="memory-list ${mode === "zh" ? "hidden" : ""}">${x.itemsEn.map(v => `<li>${v}</li>`).join("")}</ul>
+          <ul class="memory-list ${mode === "en" ? "hidden" : ""}">${x.itemsZh.map(v => `<li>${v}</li>`).join("")}</ul>
+          ${speakMini(`${x.en}. ${x.itemsEn.join(". ")}`)}
+        </div>
+      `;
+    }
+
+    function buildStudyPack(item) {
+      const simple = simpleLine(item.level);
+      const formula = formulaFor(item.level);
+      return {
+        plain: [
+          {
+            en: "Teacher Talk",
+            zh: "老師口語版",
+            bodyEn: `${item.osEn} is the control panel for ${item.modules[0].toLowerCase()} in medical chemistry. It connects the chemical rule to ${item.links[0].toLowerCase()}, clinical interpretation, and high-yield high-yield patterns.`,
+            bodyZh: `${item.osZh} 是「${item.modules[0]}」在醫學化學中的控制面板。它把化學規則連到「${item.links[0]}」、臨床判讀與高頻高頻型態。`
+          },
+          {
+            en: "One Breath Summary",
+            zh: "一口氣講完",
+            bodyEn: simple.en,
+            bodyZh: simple.zh
+          }
+        ],
+        questions: [
+          {
+            titleEn: "Concept Recognition Question",
+            titleZh: "概念辨識題",
+            questionEn: `Clinical vignette anchor: ${item.links[0]} is primarily mapped to ${item.osEn}.`,
+            questionZh: `臨床病例錨點：「${item.links[0]}」主要對應 ${item.osZh}。`,
+            answerEn: item.osEn,
+            answerZh: item.osZh,
+            explainEn: `Because this chapter connects ${item.modules[0]} to ${item.links[0]} and gives the basic rule for interpretation.`,
+            explainZh: `因為本章把「${item.modules[0]}」連到「${item.links[0]}」，提供判讀的基本規則。`
+          },
+          {
+            titleEn: "Formula or Rule Question",
+            titleZh: "公式或規則題",
+            questionEn: `Core calculation or mechanism rule in ${item.osEn}: ${formula.en}`,
+            questionZh: `${item.osZh} 的核心計算或機制規則：${formula.zh}`,
+            answerEn: formula.en,
+            answerZh: formula.zh,
+            explainEn: `Shortest operational rule plus clinical meaning.`,
+            explainZh: `最短操作規則與臨床意義。`
+          },
+          {
+            titleEn: "Clinical Bridge Question",
+            titleZh: "臨床連結題",
+            questionEn: `Medical meaning of ${item.osEn}: ${item.links.slice(0, 3).join(", ")}.`,
+            questionZh: `${item.osZh} 的醫學意義：「${item.links.slice(0, 3).join("、")}」。`,
+            answerEn: `It explains ${item.links.slice(0, 3).join(", ")}.`,
+            answerZh: `它可以解釋「${item.links.slice(0, 3).join("、")}」。`,
+            explainEn: `Chemistry appears inside physiology, lab data, pharmacology, and clinical safety.`,
+            explainZh: `化學內容常出現在生理、檢驗數據、藥理與臨床安全中。`
+          }
+        ],
+        memorize: [
+          {
+            en: "Core Memorization Content",
+            zh: "核心背誦內容",
+            itemsEn: [item.wisdom, formula.en, `${item.osEn} = ${item.modules.slice(0, 3).join(" + ")}`, `Clinical anchor: ${item.links[0]}`],
+            itemsZh: [translateWisdom(item.level), formula.zh, `${item.osZh} = ${item.modules.slice(0, 3).join("＋")}`, `臨床錨點：${item.links[0]}`]
+          },
+          {
+            en: "Best Memory Hooks",
+            zh: "最好記的鉤子",
+            itemsEn: [`Keyword: ${item.osEn.replace(" OS", "")}`, `Core variables: change, measurement, clinical signal`, `${item.modules[0]} -> ${item.modules[1] || item.osEn} -> ${item.links[0]}`],
+            itemsZh: [`關鍵字：${item.osZh.replace("作業系統", "")}`, `核心變數：改變、測量、臨床訊號`, `${item.modules[0]} → ${item.modules[1] || item.osZh} → ${item.links[0]}`]
+          },
+          {
+            en: "Exam Trigger Words",
+            zh: "考題觸發字",
+            itemsEn: triggerWords(item.level).en,
+            itemsZh: triggerWords(item.level).zh
+          },
+          {
+            en: "Required Module Memory",
+            zh: "必建模組背誦",
+            itemsEn: item.modules.map(m => `${m}: definition, rule, exam point, connection to ${item.links[0]}`),
+            itemsZh: item.modules.map(m => `${m}：定義、規則、考點、連到「${item.links[0]}」`)
+          },
+          {
+            en: "Medical Link Memory",
+            zh: "醫學連結背誦",
+            itemsEn: item.links.map(m => `${m}: chemistry concept -> physiological effect -> clinical clue`),
+            itemsZh: item.links.map(m => `${m}：化學概念 → 生理效應 → 臨床線索`)
+          },
+          {
+            en: "APP Module Memory",
+            zh: "APP 模組背誦",
+            itemsEn: appModuleDetails().map(x => `${x.en}: ${x.bodyEn}`),
+            itemsZh: appModuleDetails().map(x => `${x.zh}：${x.bodyZh}`)
+          }
+        ],
+        use: [
+          {
+            en: "Problem-Solving Content",
+            zh: "解題內容",
+            itemsEn: [`OS node: ${item.osEn}.`, `Core rule: ${formula.en}`, `Clinical output: ${item.links[0]}.`, `Wrong choices: ignore units, mechanism, or clinical context.`],
+            itemsZh: [`OS 節點：${item.osZh}。`, `核心規則：${formula.zh}`, `臨床輸出：「${item.links[0]}」。`, `錯誤選項：忽略單位、機制或臨床情境。`]
+          },
+          {
+            en: "Clinical Content",
+            zh: "臨床內容",
+            itemsEn: [`Clinical triggers: lab values, dose, pressure, concentration, energy, shape, and molecular interaction.`, `Chemistry term -> patient-level effect.`, `Clinical endpoints: diagnosis, monitoring, treatment, toxicity.`],
+            itemsZh: [`臨床觸發點：檢驗值、劑量、壓力、濃度、能量、形狀、分子作用。`, `化學名詞 → 病人層級影響。`, `臨床終點：診斷、監測、治療、毒性。`]
+          },
+          {
+            en: "Integrated Output",
+            zh: "整合呈現",
+            itemsEn: [`One table: definition, formula, unit, common trap, clinical link.`, `One diagram: input -> process -> output -> feedback.`, `One card: question on front, one sentence answer on back.`],
+            itemsZh: [`一張表：定義、公式、單位、常見陷阱、臨床連結。`, `一張圖：輸入 → 處理 → 輸出 → 回饋。`, `一張卡：正面問問題，背面只放一句答案。`]
+          },
+          {
+            en: "Module to Question Workflow",
+            zh: "模組到考題流程",
+            itemsEn: item.modules.map(m => `${m}: definition, changed variable, applicable formula, eliminated wrong choice`),
+            itemsZh: item.modules.map(m => `${m}：定義、改變變數、適用公式、可排除錯誤選項`)
+          },
+          {
+            en: "Medical Link Workflow",
+            zh: "醫學連結流程",
+            itemsEn: item.links.map(m => `${m}: connect chemistry to symptom, lab value, diagnosis, treatment, or toxicity`),
+            itemsZh: item.links.map(m => `${m}：把化學連到症狀、檢驗值、診斷、治療或毒性`)
+          },
+          {
+            en: "APP Study Workflow",
+            zh: "APP 學習流程",
+            itemsEn: [`Dashboard: weak nodes and review priority`, `Bilingual Reader: Chinese-English content with audio`, `Formula Lab: variables, units, traps, examples`, `Quiz Bank: concept, formula, clinical, comparison questions`, `Anki Mode: short recall cards and spaced review`, `Clinical Bridge: disease, lab, treatment, safety links`],
+            itemsZh: [`儀表板：弱點節點與複習優先順序`, `雙語閱讀器：中英內容與英文朗讀`, `公式實驗室：變數、單位、陷阱、例題`, `題庫模式：概念題、公式題、臨床題、比較題`, `Anki 模式：短回憶卡與間隔複習`, `臨床橋接：疾病、檢驗、治療、安全連結`]
+          }
+        ]
+      };
+    }
+
+    function simpleLine(level) {
+      const map = {
+        1: ["Physical world -> measurable numbers -> medical interpretation.", "物質世界 → 可測量數字 → 醫學判讀。"],
+        2: ["Body function starts from atoms; physiology runs through ions.", "身體功能從原子開始；生理運作常常靠離子。"],
+        3: ["Substance change plus quantity calculation.", "物質變化與所需數量。"],
+        4: ["The body as water-based concentration and osmotic pressure system.", "人體 = 水、濃度、滲透壓系統。"],
+        5: ["Heat and chemical energy flow during reactions.", "反應中的熱與化學能流向。"],
+        6: ["Electron arrangement explains chemical behavior and light interaction.", "電子排列決定化學行為與光互動。"],
+        7: ["The periodic table predicts element behavior in the body.", "週期表預測元素在身體裡的行為。"],
+        8: ["Atoms hold together and become biological molecules.", "原子鍵結成生物分子。"],
+        9: ["Molecular shape decides recognition, binding, and function.", "分子形狀決定辨識、結合與功能。"],
+        10: ["Pressure and volume explain breathing and blood gases.", "壓力與體積解釋呼吸和血液氣體。"],
+        11: ["Weak attractions organize water, proteins, membranes, and drugs.", "弱吸引力組織水、蛋白質、膜和藥物。"],
+        12: ["Solid structure controls bones, crystals, implants, and materials.", "固體結構控制骨頭、結晶、植入物與材料。"],
+        13: ["Reaction favorability and energy cost of biological order.", "反應自發性與生命維持秩序的能量成本。"]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+
+    function triggerWords(level) {
+      const map = {
+        1: [["unit", "density", "significant figures", "measurement error"], ["單位", "密度", "有效數字", "測量誤差"]],
+        2: [["ion", "isotope", "charge", "atomic number"], ["離子", "同位素", "電荷", "原子序"]],
+        3: [["mole", "balanced equation", "limiting reactant", "yield"], ["莫耳", "平衡方程式", "限量反應物", "產率"]],
+        4: [["molarity", "dilution", "osmotic pressure", "electrolyte"], ["莫耳濃度", "稀釋", "滲透壓", "電解質"]],
+        5: [["heat", "enthalpy", "calorimetry", "exothermic"], ["熱", "焓", "量熱", "放熱"]],
+        6: [["photon", "orbital", "electron configuration", "spectrum"], ["光子", "軌域", "電子組態", "光譜"]],
+        7: [["electronegativity", "ionization energy", "atomic radius", "periodic trend"], ["電負度", "游離能", "原子半徑", "週期趨勢"]],
+        8: [["bond polarity", "octet", "bond energy", "covalent"], ["鍵極性", "八隅體", "鍵能", "共價"]],
+        9: [["VSEPR", "hybridization", "bond angle", "formal charge", "resonance"], ["VSEPR", "混成", "鍵角", "形式電荷", "共振"]],
+        10: [["partial pressure", "PV=nRT", "diffusion", "Dalton law"], ["分壓", "PV=nRT", "擴散", "道耳頓定律"]],
+        11: [["hydrogen bonding", "surface tension", "vapor pressure", "solubility"], ["氫鍵", "表面張力", "蒸氣壓", "溶解度"]],
+        12: [["crystal", "unit cell", "semiconductor", "implant"], ["晶體", "晶胞", "半導體", "植入物"]],
+        13: [["Gibbs free energy", "entropy", "spontaneous", "coupled reaction"], ["吉布斯自由能", "熵", "自發", "偶聯反應"]]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+    function renderDeepModules(item) {
+      const details = buildDetails(item);
+      document.querySelector("#osLayers").innerHTML = details.layers.map(x => card(x.en, x.zh, x.bodyEn, x.bodyZh)).join("");
+      document.querySelector("#onePageTable").innerHTML = onePageTable(item, details);
+      document.querySelector("#diagramPack").innerHTML = renderDiagramPack(item);
+      document.querySelector("#levelVersions").innerHTML = details.versions.map(x => card(x.en, x.zh, x.bodyEn, x.bodyZh)).join("");
+      document.querySelector("#modelsFormulas").innerHTML = details.models.map(x => card(x.en, x.zh, x.bodyEn, x.bodyZh)).join("");
+      document.querySelector("#practicePack").innerHTML = renderPracticePack(item);
+document.querySelector("#diseaseLinks").innerHTML = renderDiseasePack(item);
+
+    }
+
+
+
+    function renderPracticePack(item) {
+      const formula = formulaFor(item.level);
+      const triggers = triggerWords(item.level);
+      const compare = comparisonFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const cards = buildAnkiCards(item, formula, triggers, diseases);
+      const quizzes = buildQuizItems(item, formula, compare, diseases);
+      const mistakes = buildMistakeItems(item, formula, compare, diseases);
+      return `
+        <div class="visual-grid">
+          ${visualPoster(
+            "Anki Deck",
+            "Anki 卡組",
+            `<table class="compare-table"><tr><th>Front</th><th>Back</th></tr>${cards.map(c => `<tr><td>${c.frontEn}</td><td>${c.backEn}</td></tr>`).join("")}</table>`,
+            `<table class="compare-table"><tr><th>正面</th><th>背面</th></tr>${cards.map(c => `<tr><td>${c.frontZh}</td><td>${c.backZh}</td></tr>`).join("")}</table>`,
+            `${item.osEn}. Anki deck. ${cards.map(c => c.backEn).join(". ")}`
+          )}
+          ${visualPoster(
+            "Quiz Bank",
+            "Quiz 題庫",
+            `<table class="compare-table"><tr><th>Stem</th><th>Answer</th><th>Explanation</th></tr>${quizzes.map(q => `<tr><td>${q.stemEn}</td><td>${q.answerEn}</td><td>${q.explainEn}</td></tr>`).join("")}</table>`,
+            `<table class="compare-table"><tr><th>題幹</th><th>答案</th><th>解析</th></tr>${quizzes.map(q => `<tr><td>${q.stemZh}</td><td>${q.answerZh}</td><td>${q.explainZh}</td></tr>`).join("")}</table>`,
+            `${item.osEn}. Quiz bank. ${quizzes.map(q => q.answerEn).join(". ")}`
+          )}
+          ${visualPoster(
+            "Mistake Notebook",
+            "錯題本",
+            `<table class="compare-table"><tr><th>Mistake</th><th>Correct Content</th><th>Fix</th></tr>${mistakes.map(m => `<tr><td>${m.mistakeEn}</td><td>${m.correctEn}</td><td>${m.fixEn}</td></tr>`).join("")}</table>`,
+            `<table class="compare-table"><tr><th>錯誤</th><th>正確內容</th><th>修正</th></tr>${mistakes.map(m => `<tr><td>${m.mistakeZh}</td><td>${m.correctZh}</td><td>${m.fixZh}</td></tr>`).join("")}</table>`,
+            `${item.osEn}. Mistake notebook. ${mistakes.map(m => m.correctEn).join(". ")}`
+          )}
+          ${visualPoster(
+            "Board-Style Vignette",
+            "國考病例題型",
+            `<div class="quiz-mini"><b>Vignette</b>: ${diseases[0].en} with ${item.links[0]} abnormality.</div><div class="quiz-mini"><b>Chemistry key</b>: ${formula.en}</div><div class="quiz-mini"><b>High-yield comparison</b>: ${compare.en}</div><div class="quiz-mini"><b>Answer logic</b>: ${item.modules[0]} -> ${item.links[0]} -> ${diseases[0].en}</div>`,
+            `<div class="quiz-mini"><b>病例</b>：${diseases[0].zh} 合併「${item.links[0]}」異常。</div><div class="quiz-mini"><b>化學關鍵</b>：${formula.zh}</div><div class="quiz-mini"><b>高頻比較</b>：${compare.zh}</div><div class="quiz-mini"><b>答案邏輯</b>：${item.modules[0]} → ${item.links[0]} → ${diseases[0].zh}</div>`,
+            `${diseases[0].en}. ${formula.en}. ${compare.en}`
+          )}
+        </div>
+      `;
+    }
+
+    function buildAnkiCards(item, formula, triggers, diseases) {
+      return [
+        { frontEn: item.osEn, backEn: item.wisdom, frontZh: item.osZh, backZh: translateWisdom(item.level) },
+        { frontEn: "Core formula", backEn: formula.en, frontZh: "核心公式", backZh: formula.zh },
+        { frontEn: "Clinical anchor", backEn: item.links[0], frontZh: "臨床錨點", backZh: item.links[0] },
+        { frontEn: "Trigger words", backEn: triggers.en.join(", "), frontZh: "觸發字", backZh: triggers.zh.join("、") },
+        { frontEn: "Disease link", backEn: `${diseases[0].en}: ${diseases[0].bodyEn}`, frontZh: "疾病連結", backZh: `${diseases[0].zh}：${diseases[0].bodyZh}` },
+        { frontEn: "Module chain", backEn: `${item.modules.slice(0, 4).join(" -> ")} -> ${item.links[0]}`, frontZh: "模組鏈", backZh: `${item.modules.slice(0, 4).join(" → ")} → ${item.links[0]}` }
+      ];
+    }
+
+    function buildQuizItems(item, formula, compare, diseases) {
+      return [
+        { stemEn: `${item.links[0]} is abnormal in a clinical vignette.`, answerEn: item.osEn, explainEn: `${item.links[0]} is mapped to ${item.osEn}.`, stemZh: `病例中「${item.links[0]}」異常。`, answerZh: item.osZh, explainZh: `「${item.links[0]}」對應 ${item.osZh}。` },
+        { stemEn: `Core quantitative rule for this chapter.`, answerEn: formula.en, explainEn: `The formula organizes variables, units, and clinical output.`, stemZh: `本章核心定量規則。`, answerZh: formula.zh, explainZh: `此公式整合變數、單位與臨床輸出。` },
+        { stemEn: `Most confusing comparison.`, answerEn: compare.en, explainEn: `This pair is the common high-yield split.`, stemZh: `最容易混淆的比較。`, answerZh: compare.zh, explainZh: `這組是高頻分歧點。` },
+        { stemEn: `${diseases[0].en} mechanism.`, answerEn: diseases[0].bodyEn, explainEn: `${item.modules[0]} connects the chemistry rule to the disease.`, stemZh: `${diseases[0].zh} 的機制。`, answerZh: diseases[0].bodyZh, explainZh: `${item.modules[0]} 把化學規則連到疾病。` },
+        { stemEn: `Best clinical output of ${item.osEn}.`, answerEn: item.links.slice(0, 3).join(", "), explainEn: `These are the first clinical anchors for this OS node.`, stemZh: `${item.osZh} 的主要臨床輸出。`, answerZh: item.links.slice(0, 3).join("、"), explainZh: `這些是此 OS 節點的第一層臨床錨點。` }
+      ];
+    }
+
+    function buildMistakeItems(item, formula, compare, diseases) {
+      return [
+        { mistakeEn: "Term memorized alone", correctEn: `${item.modules[0]} + mechanism + ${item.links[0]}`, fixEn: "Attach every term to one rule and one clinical output.", mistakeZh: "只背名詞", correctZh: `${item.modules[0]}＋機制＋${item.links[0]}`, fixZh: "每個名詞固定接一條規則與一個臨床輸出。" },
+        { mistakeEn: "Formula without unit", correctEn: `${formula.en}`, fixEn: "Formula, variable, unit, and direction stay together.", mistakeZh: "公式沒有單位", correctZh: `${formula.zh}`, fixZh: "公式、變數、單位、方向一起記。" },
+        { mistakeEn: "Wrong comparison", correctEn: compare.en, fixEn: "Separate definition, mechanism, and clinical consequence.", mistakeZh: "比較點錯誤", correctZh: compare.zh, fixZh: "分開定義、機制、臨床結果。" },
+        { mistakeEn: "Clinical link too vague", correctEn: `${diseases[0].en}: ${diseases[0].bodyEn}`, fixEn: "Disease card must include mechanism and lab/safety anchor.", mistakeZh: "臨床連結太模糊", correctZh: `${diseases[0].zh}：${diseases[0].bodyZh}`, fixZh: "疾病卡必須包含機制與檢驗/安全錨點。" },
+        { mistakeEn: "Output confused with feedback", correctEn: `Output: ${item.links[0]}; feedback: quiz traps and disease pattern`, fixEn: "Keep IPOF table visible.", mistakeZh: "輸出與回饋混淆", correctZh: `輸出：${item.links[0]}；回饋：題目陷阱與疾病型態`, fixZh: "固定看 IPOF 表。" }
+      ];
+    }
+
+    function renderDiseasePack(item) {
+      const diseases = expandedDiseaseLinks(item);
+      const formula = formulaFor(item.level);
+      const compare = comparisonFor(item.level);
+      const unit = unitFor(item.level);
+      return `<div class="visual-grid">${diseases.map((d, i) => diseaseCard(item, d, i, formula, compare, unit)).join("")}</div>`;
+    }
+
+
+    function expandedDiseaseLinks(item) {
+      const base = diseaseFor(item.level);
+      const formula = formulaFor(item.level);
+      return [
+        ...base,
+        {
+          en: `${item.links[0]} abnormality`,
+          zh: `${item.links[0]} 異常`,
+          bodyEn: `${item.links[0]} is the first clinical output of ${item.osEn}. It reflects ${item.modules[0]}, ${item.modules[1] || item.modules[0]}, and the rule ${formula.en}`,
+          bodyZh: `「${item.links[0]}」是 ${item.osZh} 的第一臨床輸出，反映 ${item.modules[0]}、${item.modules[1] || item.modules[0]} 與規則「${formula.zh}」。`
+        },
+        {
+          en: `${item.links[1] || item.links[0]} safety pattern`,
+          zh: `${item.links[1] || item.links[0]} 安全型態`,
+          bodyEn: `Safety risk appears when the chemical variable, unit frame, and clinical context do not match. The high-yield node is ${item.modules[0]}.`,
+          bodyZh: `當化學變數、單位框架與臨床情境不一致，就會出現安全風險。高頻節點是 ${item.modules[0]}。`
+        },
+        {
+          en: `${item.osEn} cross-subject bridge`,
+          zh: `${item.osZh} 跨科橋接`,
+          bodyEn: `${item.osEn} connects general chemistry to biochemistry, physiology, pharmacology, pathology, and clinical medicine through ${item.links.slice(0, 3).join(", ")}.`,
+          bodyZh: `${item.osZh} 透過「${item.links.slice(0, 3).join("、")}」把普通化學連到生化、生理、藥理、病理與臨床醫學。`
+        }
+      ];
+    }
+    function diseaseCard(item, d, i, formula, compare, unit) {
+      return visualPoster(
+        `${String(i + 1).padStart(2, "0")} ${d.en}`,
+        `${String(i + 1).padStart(2, "0")} ${d.zh}`,
+        `<table class="compare-table"><tr><th>Disease</th><td>${d.en}</td></tr><tr><th>Chemistry Mechanism</th><td>${d.bodyEn}</td></tr><tr><th>Formula / Rule</th><td>${formula.en}</td></tr><tr><th>Lab / Unit Frame</th><td>${unit.en}</td></tr><tr><th>Clinical Anchors</th><td>${item.links.slice(0, 4).join(", ")}</td></tr><tr><th>High-Yield Comparison</th><td>${compare.en}</td></tr><tr><th>Safety Point</th><td>unit, mechanism, and patient context alignment</td></tr></table>`,
+        `<table class="compare-table"><tr><th>疾病</th><td>${d.zh}</td></tr><tr><th>化學機制</th><td>${d.bodyZh}</td></tr><tr><th>公式 / 規則</th><td>${formula.zh}</td></tr><tr><th>檢驗 / 單位框架</th><td>${unit.zh}</td></tr><tr><th>臨床錨點</th><td>${item.links.slice(0, 4).join("、")}</td></tr><tr><th>高頻比較</th><td>${compare.zh}</td></tr><tr><th>安全重點</th><td>單位、機制、病人情境一致</td></tr></table>`,
+        `${d.en}. ${d.bodyEn}. ${formula.en}`
+      );
+    }
+    function renderDiagramPack(item) {
+      const formula = formulaFor(item.level);
+      const compare = comparisonFor(item.level);
+      const unit = unitFor(item.level);
+      const diseases = expandedDiseaseLinks(item);
+      const triggers = triggerWords(item.level);
+      const mapNodesEn = [item.osEn, "Definition", item.modules[0], formula.en, item.links[0], diseases[0].en, compare.en, item.wisdom];
+      const mapNodesZh = [item.osZh, "定義", item.modules[0], formula.zh, item.links[0], diseases[0].zh, compare.zh, translateWisdom(item.level)];
+      return `
+        <div class="visual-grid">
+          ${visualPoster(
+            "Mind Map",
+            "心智圖",
+            `${flowNodes(mapNodesEn.slice(0, 5))}<table class="compare-table"><tr><th>Core</th><td>${item.wisdom}</td></tr><tr><th>Clinical</th><td>${item.links.slice(0, 3).join(", ")}</td></tr><tr><th>Disease</th><td>${diseases.map(d => d.en).join(", ")}</td></tr></table>`,
+            `${flowNodes(mapNodesZh.slice(0, 5))}<table class="compare-table"><tr><th>核心</th><td>${translateWisdom(item.level)}</td></tr><tr><th>臨床</th><td>${item.links.slice(0, 3).join("、")}</td></tr><tr><th>疾病</th><td>${diseases.map(d => d.zh).join("、")}</td></tr></table>`,
+            `${item.osEn}. ${item.wisdom}`
+          )}
+          ${visualPoster(
+            "Nine Grid",
+            "九宮格",
+            nineGrid([
+              ["Ontology", item.coreEn], ["Structure", item.modules.slice(0, 3).join(", ")], ["Mechanism", formula.en],
+              ["Unit", unit.en], ["Center", item.osEn], ["Clinical", item.links[0]],
+              ["Compare", compare.en], ["Disease", diseases[0].en], ["Wisdom", item.wisdom]
+            ]),
+            nineGrid([
+              ["本體", item.coreZh], ["結構", item.modules.slice(0, 3).join("、")], ["機制", formula.zh],
+              ["單位", unit.zh], ["中心", item.osZh], ["臨床", item.links[0]],
+              ["比較", compare.zh], ["疾病", diseases[0].zh], ["智慧", translateWisdom(item.level)]
+            ]),
+            `${item.osEn}. ${item.modules.slice(0,3).join(", ")}. ${formula.en}`
+          )}
+          ${visualPoster(
+            "Concept Map",
+            "概念圖",
+            `${flowNodes([item.modules[0], item.modules[1] || item.osEn, item.modules[2] || item.osEn, item.links[0], diseases[0].en])}<div class="quiz-mini">Cross-links: ${item.links.slice(1, 4).join(", ")}</div>`,
+            `${flowNodes([item.modules[0], item.modules[1] || item.osZh, item.modules[2] || item.osZh, item.links[0], diseases[0].zh])}<div class="quiz-mini">交叉連結：${item.links.slice(1, 4).join("、")}</div>`,
+            `${item.modules[0]} to ${item.links[0]}`
+          )}
+          ${visualPoster(
+            "Framework Table",
+            "框架表",
+            `<table class="compare-table"><tr><th>Input</th><td>${item.modules[0]}</td></tr><tr><th>Rule</th><td>${formula.en}</td></tr><tr><th>Output</th><td>${item.links[0]}</td></tr><tr><th>Feedback</th><td>${triggers.en.join(", ")}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>輸入</th><td>${item.modules[0]}</td></tr><tr><th>規則</th><td>${formula.zh}</td></tr><tr><th>輸出</th><td>${item.links[0]}</td></tr><tr><th>回饋</th><td>${triggers.zh.join("、")}</td></tr></table>`,
+            `${item.modules[0]}. ${formula.en}. ${item.links[0]}`
+          )}
+          ${visualPoster(
+            "Flowchart",
+            "流程圖",
+            `${flowNodes(["Definition", "Variable", formula.en, unit.en, item.links[0], diseases[0].en])}`,
+            `${flowNodes(["定義", "變數", formula.zh, unit.zh, item.links[0], diseases[0].zh])}`,
+            `${formula.en}. ${item.links[0]}`
+          )}
+          ${visualPoster(
+            "Input Process Output Feedback",
+            "輸入→處理→輸出→回饋",
+            `<table class="compare-table"><tr><th>Input</th><td>${item.modules[0]}</td></tr><tr><th>Process</th><td>${formula.en}</td></tr><tr><th>Output</th><td>${item.links[0]}</td></tr><tr><th>Feedback</th><td>${diseases[0].en}; ${triggers.en.join(", ")}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>輸入</th><td>${item.modules[0]}</td></tr><tr><th>處理</th><td>${formula.zh}</td></tr><tr><th>輸出</th><td>${item.links[0]}</td></tr><tr><th>回饋</th><td>${diseases[0].zh}；${triggers.zh.join("、")}</td></tr></table>`,
+            `Input process output feedback. ${item.osEn}`
+          )}
+          ${visualPoster(
+            "First Principles",
+            "第一性原理",
+            `<table class="compare-table"><tr><th>Purpose</th><td>${item.coreEn}</td></tr><tr><th>Constraint</th><td>${unit.en}</td></tr><tr><th>Origin</th><td>${item.modules[0]}</td></tr><tr><th>Evolution</th><td>${item.links[0]} -> ${diseases[0].en}</td></tr></table>`,
+            `<table class="compare-table"><tr><th>目的</th><td>${item.coreZh}</td></tr><tr><th>限制</th><td>${unit.zh}</td></tr><tr><th>起源</th><td>${item.modules[0]}</td></tr><tr><th>演化</th><td>${item.links[0]} → ${diseases[0].zh}</td></tr></table>`,
+            `First principles. ${item.coreEn}`
+          )}
+          ${visualPoster(
+            "Comparison and Difference Map",
+            "對比圖與差異圖",
+            `<table class="compare-table"><tr><th>High-yield pair</th><td>${compare.en}</td></tr><tr><th>Formula</th><td>${formula.en}</td></tr><tr><th>Clinical split</th><td>${item.links.slice(0, 2).join(" vs ")}</td></tr><tr><th>Trap</th><td>definition-mechanism-unit mismatch</td></tr></table>`,
+            `<table class="compare-table"><tr><th>高頻比較</th><td>${compare.zh}</td></tr><tr><th>公式</th><td>${formula.zh}</td></tr><tr><th>臨床分歧</th><td>${item.links.slice(0, 2).join(" vs ")}</td></tr><tr><th>陷阱</th><td>定義、機制、單位不一致</td></tr></table>`,
+            `${compare.en}. ${formula.en}`
+          )}
+        </div>
+      `;
+    }
+
+    function nineGrid(cells) {
+      return `<table class="compare-table">${[0,3,6].map(row => `<tr>${cells.slice(row, row + 3).map(c => `<td><b>${c[0]}</b><br>${c[1]}</td>`).join("")}</tr>`).join("")}</table>`;
+    }
+    function onePageTable(item, details) {
+      const rows = [
+        ["OS Node", "作業系統節點", item.osEn, item.osZh],
+        ["Chapter", "章節", item.chapterEn, item.chapterZh],
+        ["IPA", "音標", ipaFor(item.osEn), "英文核心詞發音"],
+        ["Word Root", "字根", rootFor(item), "醫學英文拆解"],
+        ["Ontology", "本體層", details.layers[0].bodyEn, details.layers[0].bodyZh],
+        ["Structure", "結構層", details.layers[1].bodyEn, details.layers[1].bodyZh],
+        ["Mechanism", "機制層", details.layers[2].bodyEn, details.layers[2].bodyZh],
+        ["Application", "行動層", details.layers[3].bodyEn, details.layers[3].bodyZh],
+        ["Clinical", "臨床", item.links.slice(0, 3).join("; "), "連到「" + item.links.slice(0, 3).join("、") + "」"],
+        ["Wisdom", "核心智慧", item.wisdom, translateWisdom(item.level)]
+      ];
+      return `
+        <table class="data-table">
+          <thead><tr><th>Field</th><th>欄位</th><th>English</th><th>中文</th><th>Audio</th></tr></thead>
+          <tbody>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${mode === "zh" ? "hidden" : ""}">${r[2]}</td><td class="${mode === "en" ? "hidden" : ""}">${r[3]}</td><td>${speakMini(r[2])}</td></tr>`).join("")}</tbody>
+        </table>
+      `;
+    }
+
+    function buildDetails(item) {
+      const moduleText = item.modules.slice(0, 5).join(", ");
+      const linkText = item.links.slice(0, 5).join(", ");
+      return {
+        layers: [
+          {
+            en: "Ontology Layer",
+            zh: "本體層",
+            bodyEn: `${item.osEn} defines what this chapter is: a reusable medical chemistry node centered on ${item.coreEn.toLowerCase()}`,
+            bodyZh: `${item.osZh} 定義本章到底是什麼：一個可重複使用的醫學化學節點，核心是「${item.coreZh}」`
+          },
+          {
+            en: "Structure Layer",
+            zh: "結構層",
+            bodyEn: `The node is built from ${moduleText}. These parts connect upward to biochemistry and downward to measurable chemical primitives.`,
+            bodyZh: `此節點由「${moduleText}」組成，向上連到生化與醫學，向下連到可測量的化學基本元件。`
+          },
+          {
+            en: "Mechanism Layer",
+            zh: "機制層",
+            bodyEn: `The mechanism explains how ${item.osEn.replace(" OS", "").toLowerCase()} produces observable effects through rules, constraints, quantities, and interactions.`,
+            bodyZh: `機制層說明 ${item.osZh.replace("作業系統", "")} 如何透過規則、限制、數量與交互作用產生可觀察結果。`
+          },
+          {
+            en: "Application Layer",
+            zh: "行動層",
+            bodyEn: `This node contains high-yield patterns, diagrams, vocabulary, ${linkText}, and clinical reasoning connections.`,
+            bodyZh: `此節點包含高頻型態、圖像整理、英文詞彙、「${linkText}」與臨床推理連結。`
+          }
+        ],
+        diagrams: [
+          {
+            en: "Mind Map",
+            zh: "心智圖",
+            bodyEn: `${item.osEn} branches into definition, key terms, formulas, medical links, exam traps, and memory hooks.` ,
+            bodyZh: `${item.osZh} 分成定義、關鍵詞、公式、醫學連結、考試陷阱與記憶鉤子。`
+          },
+          {
+            en: "Nine Grid",
+            zh: "九宮格",
+            bodyEn: `Center: ${item.osEn}. Surrounding nodes: ontology, reason, mechanism, structure, formula, clinical meaning, high-yield pattern, core sentence, integration.`,
+            bodyZh: `中心：${item.osZh}。周圍節點：本體、原因、機制、結構、公式、臨床意義、高頻型態、核心句、跨科整合。`
+          },
+          {
+            en: "Concept Map",
+            zh: "概念圖",
+            bodyEn: `${item.modules.slice(0,4).join(" -> ")} -> ${item.links.slice(0,3).join(" -> ")}.`,
+            bodyZh: `從基礎模組連到醫學應用：${item.modules.slice(0,4).join(" → ")} → ${item.links.slice(0,3).join(" → ")}。`
+          },
+          {
+            en: "Framework Diagram",
+            zh: "框架圖",
+            bodyEn: `Input: concepts. Process: rules and calculations. Output: predictions. Feedback: quiz, cases, and mistakes.`,
+            bodyZh: `輸入是概念，處理是規則與計算，輸出是預測，回饋是題庫、病例與錯題。`
+          },
+          {
+            en: "Flowchart",
+            zh: "流程圖",
+            bodyEn: `Definition -> variables -> rule -> units -> medical meaning -> Anki recall.`,
+            bodyZh: `定義 → 變數 → 規則 → 單位 → 醫學意義 → Anki 回憶。`
+          },
+          {
+            en: "Input Process Output Feedback",
+            zh: "輸入→處理→輸出→回饋",
+            bodyEn: `Input: ${item.modules[0]}. Process: ${item.modules[1] || item.osEn}. Output: ${item.links[0]}. Feedback: mistakes become review cards.`,
+            bodyZh: `輸入：${item.modules[0]}；處理：${item.modules[1] || item.osZh}；輸出：${item.links[0]}；回饋：錯題變複習卡。`
+          },
+          {
+            en: "First Principles",
+            zh: "第一性原理",
+            bodyEn: `Purpose: explain medical chemistry. Constraint: obey measurable chemical laws. Origin: matter and energy. Evolution: from chemistry to physiology.`,
+            bodyZh: `目的：解釋醫學化學；限制：遵守可測量化學定律；起源：物質與能量；演化：由化學走向生理。`
+          },
+          {
+            en: "Comparison and Difference Map",
+            zh: "對比圖與差異圖",
+            bodyEn: `Compare similar terms, separate definitions from mechanisms, and mark the one feature that changes the answer in exams.`,
+            bodyZh: `比較相似名詞，分開定義與機制，標出考題中會改變答案的關鍵差異。`
+          }
+        ],
+        versions: [
+          {
+            en: "Elementary School Version",
+            zh: "國小版",
+            bodyEn: elementaryVersion(item).en,
+            bodyZh: elementaryVersion(item).zh
+          },
+          {
+            en: "Middle School Version",
+            zh: "國中版",
+            bodyEn: `${item.osEn} = the simple rule explaining this part of the body and material world.` ,
+            bodyZh: `${item.osZh} = 解釋身體與物質世界這一部分的簡單規則。`
+          },
+          {
+            en: "High School Version",
+            zh: "高中版",
+            bodyEn: `Definitions, formulas, and diagrams predict condition-dependent changes.`,
+            bodyZh: `定義、公式與圖像可預測條件改變後的結果。`
+          },
+          {
+            en: "Medical Student Version",
+            zh: "醫學生版",
+            bodyEn: `Connect the chemical rule to physiology, lab data, pharmacology, pathology, and clinical decision-making.`,
+            bodyZh: `把化學規則連到生理、檢驗數據、藥理、病理與臨床判斷。`
+          },
+          {
+            en: "Clinical Version",
+            zh: "臨床版",
+            bodyEn: `Clinical impact: diagnosis, monitoring, treatment, toxicity, and patient safety.`,
+            bodyZh: `臨床影響：診斷、監測、治療、毒性、病人安全。`
+          }
+        ],
+        models: [
+          {
+            en: "Core Model 1: Rule to Body",
+            zh: "核心模型 1：規則到身體",
+            bodyEn: `Chemical rule -> molecular behavior -> cellular effect -> organ function -> clinical sign.`,
+            bodyZh: `化學規則 → 分子行為 → 細胞效應 → 器官功能 → 臨床表現。`
+          },
+          {
+            en: "Core Model 2: Exam Pattern",
+            zh: "核心模型 2：高頻型態",
+            bodyEn: `Keyword -> concept ID -> formula or mechanism -> unit check -> answer elimination.`,
+            bodyZh: `關鍵字 → 概念 ID → 公式或機制 → 單位檢查 → 選項排除。`
+          },
+          {
+            en: "Core Formula",
+            zh: "核心公式",
+            bodyEn: formulaFor(item.level).en,
+            bodyZh: formulaFor(item.level).zh
+          }
+        ],
+        practice: [
+          {
+            en: "Anki Card",
+            zh: "Anki 卡",
+            bodyEn: `Anki front: medical meaning of ${item.osEn}. Anki back: ${item.wisdom}`,
+            bodyZh: `Anki 正面：${item.osZh} 的醫學意義。Anki 背面：${translateWisdom(item.level)}`
+          },
+          {
+            en: "Quiz",
+            zh: "Quiz 題",
+            bodyEn: `Quiz stem: clinical situation explained by ${item.osEn}. Correct answer connection: ${item.links[0]}.`,
+            bodyZh: `Quiz 題幹：由 ${item.osZh} 解釋的臨床情境。正解連結：「${item.links[0]}」。`
+          },
+          {
+            en: "Mistake Notebook",
+            zh: "錯題本",
+            bodyEn: `Common mistake pattern: isolated vocabulary without mechanism, units, and clinical connection.`,
+            bodyZh: `常見錯誤型態：孤立名詞，缺少機制、單位與臨床連結。`
+          }
+        ],
+        diseases: diseaseFor(item.level)
+      };
+    }
+
+
+    function elementaryVersion(item) {
+      const map = {
+        1: ["Things have size, weight, temperature, and amount. Chemistry starts by measuring them carefully, like reading a ruler or a thermometer.", "東西有大小、重量、溫度和數量。化學的第一步，就是像看尺或溫度計一樣，把它們量清楚。"],
+        2: ["Everything is built from tiny pieces called atoms. Some tiny pieces become charged ions, and those ions help the body send signals.", "所有東西都由很小很小的原子組成。有些小粒子會變成帶電的離子，而離子可以幫身體傳訊號。"],
+        3: ["A chemical reaction is like rearranging building blocks. Stoichiometry is counting how many blocks are needed.", "化學反應就像重新排列積木。化學計量就是數一數需要幾個積木。"],
+        4: ["The body is like a water world with salt, sugar, and tiny particles dissolved inside. Concentration decides where water moves.", "人體像一個水世界，裡面溶了鹽、糖和小粒子。濃度會決定水往哪裡移動。"],
+        5: ["Some reactions give out heat, and some reactions take in heat. The body also has to control heat to stay alive.", "有些反應會放出熱，有些反應會吸收熱。身體也必須控制熱，才能好好活著。"],
+        6: ["Electrons are tiny moving parts around atoms. Where electrons stay decides how atoms shine, bond, and react.", "電子是原子外面很小的活動零件。電子待在哪裡，會決定原子怎麼發光、怎麼黏在一起、怎麼反應。"],
+        7: ["The periodic table is like a map of elements. Elements near each other often act in similar ways.", "週期表像元素地圖。位置接近的元素，常常有相似的行為。"],
+        8: ["Chemical bonds are the ways atoms hold hands. When atoms hold hands differently, they make different materials and body molecules.", "化學鍵就是原子牽手的方式。原子牽手方式不同，就會做出不同材料和身體分子。"],
+        9: ["Molecules have shapes, just like keys have shapes. The right shape can fit the right lock in the body.", "分子有形狀，就像鑰匙有形狀。形狀對了，才能打開身體裡對的鎖。"],
+        10: ["Gases spread out and push on things. Breathing works because oxygen and carbon dioxide move by pressure differences.", "氣體會散開，也會推東西。呼吸能運作，是因為氧氣和二氧化碳會照壓力差移動。"],
+        11: ["Molecules can gently pull on each other. These small pulls help water, proteins, membranes, and medicines behave the way they do.", "分子之間會有小小的吸引力。這些小拉力會影響水、蛋白質、細胞膜和藥物的行為。"],
+        12: ["Solids have inside patterns. Bones, teeth, crystals, and implants work because their solid structures are different.", "固體裡面有排列方式。骨頭、牙齒、結晶和植入物會有不同功能，是因為它們的固體結構不同。"],
+        13: ["Life needs energy to keep order. ATP is like a small energy coin that cells spend to do work.", "生命需要能量來維持秩序。ATP 像細胞使用的小能量硬幣，可以拿來做工。"]
+      };
+      const v = map[item.level];
+      return { en: v[0], zh: v[1] };
+    }
+    function formulaFor(level) {
+      const map = {
+        1: ["Density = mass / volume; unit conversion uses dimensional analysis.", "密度 = 質量 / 體積；單位換算使用因次分析。"],
+        2: ["Mass number = protons + neutrons; charge = protons - electrons.", "質量數 = 質子 + 中子；電荷 = 質子數 - 電子數。"],
+        3: ["Moles = mass / molar mass; stoichiometric ratio comes from the balanced equation.", "莫耳數 = 質量 / 莫耳質量；化學計量比來自平衡方程式。"],
+        4: ["Molarity = moles / liter; dilution: M1V1 = M2V2; osmotic pressure = iMRT.", "莫耳濃度 = 莫耳數 / 公升；稀釋：M1V1 = M2V2；滲透壓 = iMRT。"],
+        5: ["q = mcΔT; ΔH = heat at constant pressure.", "q = mcΔT；定壓熱量變化等於焓變 ΔH。"],
+        6: ["E = hν; c = λν; electron configuration predicts valence behavior.", "E = hν；c = λν；電子組態預測價電子行為。"],
+        7: ["Effective nuclear charge and electron shielding explain periodic trends.", "有效核電荷與電子遮蔽解釋週期趨勢。"],
+        8: ["Bond polarity follows electronegativity difference; stronger bonds require more energy to break.", "鍵極性取決於電負度差；越強的鍵需要越多能量斷裂。"],
+        9: ["Steric number = bonded atoms + lone pairs; geometry predicts polarity.", "立體數 = 鍵結原子數 + 孤對電子數；幾何形狀預測極性。"],
+        10: ["PV = nRT; total pressure equals the sum of partial pressures.", "PV = nRT；總壓等於各氣體分壓總和。"],
+        11: ["Higher intermolecular force usually means higher boiling point and lower vapor pressure.", "分子間作用力越強，通常沸點越高、蒸氣壓越低。"],
+        12: ["Unit cell structure explains density, packing, strength, and material function.", "晶胞結構解釋密度、堆積、強度與材料功能。"],
+        13: ["ΔG = ΔH - TΔS; negative ΔG means thermodynamic favorability.", "ΔG = ΔH - TΔS；ΔG 小於 0 表示熱力學上有利。"]
+      };
+      const v = map[level];
+      return { en: v[0], zh: v[1] };
+    }
+
+    function diseaseFor(level) {
+      const map = {
+        1: [["Medication dosing error", "藥物劑量錯誤", "Wrong unit conversion can cause overdose or underdose.", "單位換算錯誤會造成過量或劑量不足。"], ["Fever monitoring", "發燒監測", "Temperature scales and measurement precision affect interpretation.", "溫標與測量精準度會影響判讀。"]],
+        2: [["Electrolyte imbalance", "電解質失衡", "Sodium, potassium, calcium, and chloride are ion-level physiology.", "鈉、鉀、鈣、氯是離子層級的生理功能。"], ["Thyroid imaging", "甲狀腺影像", "Iodine isotopes connect atomic structure to nuclear medicine.", "碘同位素把原子結構連到核醫學。"]],
+        3: [["Metabolic acidosis", "代謝性酸中毒", "Reaction balance helps explain acid production and buffering.", "反應平衡可解釋酸生成與緩衝。"], ["Antidote dosing", "解毒劑劑量", "Stoichiometry helps match toxin amount with antidote amount.", "化學計量協助匹配毒物量與解毒劑量。"]],
+        4: [["Hyponatremia", "低血鈉", "Solution concentration and osmotic movement explain symptoms.", "溶液濃度與滲透移動解釋症狀。"], ["Edema", "水腫", "Osmotic and oncotic forces move water between compartments.", "滲透壓與膠體滲透壓影響水分隔室移動。"]],
+        5: [["Fever", "發燒", "Thermochemistry links energy release and body temperature.", "熱化學連接能量釋放與體溫。"], ["Hypothermia", "低體溫", "Heat capacity and heat loss explain falling body temperature.", "熱容量與熱散失解釋體溫下降。"]],
+        6: [["Pulse oximetry", "脈搏血氧", "Light absorption depends on electronic transitions.", "光吸收取決於電子躍遷。"], ["Phototherapy", "光照治療", "Photons can change molecular states and clinical outcomes.", "光子可改變分子狀態與臨床結果。"]],
+        7: [["Iron deficiency anemia", "缺鐵性貧血", "Periodic properties explain iron redox function in hemoglobin.", "週期性質解釋鐵在血紅素中的氧化還原功能。"], ["Lithium therapy", "鋰鹽治療", "Element behavior shapes pharmacologic use and toxicity.", "元素行為影響藥理用途與毒性。"]],
+        8: [["Sickle cell disease", "鐮刀型貧血", "A small bonding and amino acid change alters protein behavior.", "小的鍵結與胺基酸改變會改變蛋白質行為。"], ["Drug binding", "藥物結合", "Covalent and noncovalent bonds shape drug action.", "共價與非共價鍵影響藥物作用。"]],
+        9: [["Receptor selectivity", "受體選擇性", "Molecular shape determines whether a drug fits a receptor.", "分子形狀決定藥物是否能符合受體。"], ["Enzyme specificity", "酵素專一性", "Geometry controls active-site recognition.", "幾何形狀控制活性位辨識。"]],
+        10: [["Respiratory failure", "呼吸衰竭", "Partial pressure explains oxygenation and carbon dioxide removal.", "分壓解釋氧合與二氧化碳排出。"], ["Decompression sickness", "減壓症", "Gas solubility and pressure changes create bubbles.", "氣體溶解度與壓力改變會形成氣泡。"]],
+        11: [["Surfactant deficiency", "肺表面張力素不足", "Intermolecular forces control alveolar surface tension.", "分子間作用力控制肺泡表面張力。"], ["Drug absorption", "藥物吸收", "Solubility and intermolecular forces affect distribution.", "溶解度與分子間作用力影響分布。"]],
+        12: [["Kidney stones", "腎結石", "Crystal formation is solid-state chemistry in the body.", "結晶形成是體內固態化學。"], ["Implant materials", "植入物材料", "Solid structure controls strength and compatibility.", "固體結構控制強度與相容性。"]],
+        13: [["Mitochondrial dysfunction", "粒線體功能障礙", "Free energy and coupling explain ATP failure.", "自由能與偶聯解釋 ATP 生成失敗。"], ["Protein misfolding", "蛋白質錯誤摺疊", "Thermodynamics shapes folding stability.", "熱力學影響摺疊穩定性。"]]
+      };
+      return map[level].map(x => ({ en: x[0], zh: x[1], bodyEn: x[2], bodyZh: x[3] }));
+    }
+
+    function ipaFor(text) {
+      const first = text.replace(" OS", "").split(" ")[0].toLowerCase();
+      const map = {
+        matter: "/ˈmætər/", atom: "/ˈætəm/", reaction: "/riˈækʃən/", solution: "/səˈluːʃən/", energy: "/ˈenərdʒi/", quantum: "/ˈkwɑːntəm/", periodic: "/ˌpɪriˈɑːdɪk/", chemical: "/ˈkemɪkəl/", molecular: "/məˈlekjələr/", gas: "/ɡæs/", intermolecular: "/ˌɪntərməˈlekjələr/", solid: "/ˈsɑːlɪd/", thermodynamics: "/ˌθɜːrmoʊdaɪˈnæmɪks/"
+      };
+      return map[first] || "/-/";
+    }
+
+    function rootFor(item) {
+      const map = {
+        1: "materia = matter; metron = measure",
+        2: "atomos = indivisible; ion = going",
+        3: "react = act back; stoicheion = element; metron = measure",
+        4: "solvere = loosen; aqua = water",
+        5: "thermo = heat; chemia = chemistry",
+        6: "quantus = how much; elektron = amber/electron",
+        7: "periodos = cycle; table = ordered map",
+        8: "bond = bind; chemia = chemistry",
+        9: "molecula = small mass; geo = earth/form; metron = measure",
+        10: "chaos/gas = airy matter",
+        11: "inter = between; molecular = molecules; force = interaction",
+        12: "solidus = firm; status = state",
+        13: "thermo = heat; dynamis = power"
+      };
+      return map[item.level];
+    }
+    function translateWisdom(level) {
+      const map = {
+        1: "醫學始於物質可以被測量的那一刻。",
+        2: "原子建構物質，離子驅動生理。",
+        3: "反應解釋變化，計量控制劑量。",
+        4: "人體不只是由水組成，而是由溶液調控。",
+        5: "生命靠控制化學能量流來存活。",
+        6: "電子結構是化學行為背後的隱藏密碼。",
+        7: "週期表可以預測元素在身體中的行為。",
+        8: "化學鍵把原子變成生物功能。",
+        9: "形狀就是化學意義；在醫學中，形狀變成功能。",
+        10: "當壓力控制呼吸，氣體定律就變成生理學。",
+        11: "弱作用力足以組織生命。",
+        12: "固體結構控制身體與醫學材料的功能。",
+        13: "生命是透過消耗能量來維持秩序的熱力學策略。"
+      };
+      return map[level];
+    }
+
+    function attachSpeakButtons() {
+      document.querySelectorAll("[data-speak]").forEach(btn => {
+        btn.addEventListener("click", () => speak(btn.dataset.speak));
+      });
+    }
+
+    document.querySelectorAll("[data-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.mode;
+        document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("active", b === btn));
+        render();
+      });
+    });
+
+    document.querySelector("#speakAll").addEventListener("click", () => {
+      const item = levels[selected];
+      speak([item.osEn, item.chapterEn, item.coreEn, item.focusEn, item.wisdom].join(". "));
+    });
+
+    search.addEventListener("input", renderList);
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+    render();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
